@@ -29,7 +29,7 @@ Read on laptops and phones, often after a LinkedIn message or a GitHub profile v
 
 ## Capabilities and Constraints
 
-- One page: short about text, experience list, contact links. Projects/portfolio are deliberately out for now (may come later).
+- One page: short about text, skills, experience list, contact links. Projects/portfolio are next (as `git tag`s on the roles), not yet built.
 - Shown: name, title, city, email, GitHub, LinkedIn. Not shown: phone number, photo.
 - Experience lists jobs plus education (Tech College Aalborg), which runs as its own `uddannelse` branch. The log's root is an `Initial commit` on the owner's birth date.
 - Must be fully readable without JavaScript; motion must respect reduced-motion.
@@ -59,7 +59,9 @@ Education from LinkedIn (years only; do not add months):
 
 Born 20 Aug 1989 (owner-stated), shown as the root commit.
 
-About facts: lives in Aarhus; passion for software design, architecture and web development; many years on Microsoft's .NET stack (C#, ASP.NET, MVC, Umbraco).
+About facts: lives in Aarhus; passion for software design and architecture across the whole stack. Today mainly C# and TypeScript: .NET in the backend, Angular in the frontend, Azure and Kubernetes underneath, Aspire (a code-first tool to compose, run, debug and deploy distributed apps; not a backend framework) tying it together, and AI both as a development tool and inside the solutions built.
+
+Skills (owner-stated, first pass, to be corrected): the diffstat shows C# / .NET, TypeScript, Angular, Azure, Kubernetes, DevOps, HTML & CSS, Aspire and AI, in that order. Years are computed from each role's `Tech:` trailer as the union of periods, never typed in. Provisional: Azure, Kubernetes, DevOps, TypeScript and Angular are set to the whole ILLUMI period; Aspire since 2023-11 (its first preview; owner: "since it came out"); AI since 2023. Older, no longer claimed as mastered, trailers only: PHP, Drupal (SystemaWeb), Python (B&O test automation), Umbraco, JavaScript. Unknown: tech for B&O R&D 2011–12 and B&O IT.
 
 Contact: mail@danieltoft.dk · https://github.com/DanielToft · https://dk.linkedin.com/in/danieltoft89
 

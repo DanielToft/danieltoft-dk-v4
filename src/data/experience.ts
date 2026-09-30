@@ -1,6 +1,11 @@
 /** Year-month as `YYYY-MM`. A bare `YYYY` when only the year is known, `YYYY-MM-DD` for a single day. */
 export type YearMonth = `${number}-${string}` | `${number}`;
 
+/** A technology on a role. `since` when it came in partway through the role. */
+export type Tech = string | { name: string; since: YearMonth };
+
+export const techName = (t: Tech): string => (typeof t === 'string' ? t : t.name);
+
 export interface Role {
   company: string;
   title: string;
@@ -11,6 +16,8 @@ export interface Role {
   summary?: string;
   /** Set when the role ran in parallel with the main line: drawn as its own branch. */
   branch?: string;
+  /** Printed as a `Tech:` trailer, and the source of the skills diffstat. */
+  tech?: Tech[];
 }
 
 /** Newest first. Source: the previous danieltoft.dk. */
@@ -21,6 +28,17 @@ export const roles: Role[] = [
     start: '2016-06',
     end: null,
     url: 'https://www.illumi.dk',
+    tech: [
+      'C# / .NET',
+      'TypeScript',
+      'Angular',
+      'HTML & CSS',
+      'Azure',
+      'Kubernetes',
+      'DevOps',
+      { name: 'Aspire', since: '2023-11' },
+      { name: 'AI', since: '2023' },
+    ],
   },
   {
     company: 'NöRD A/S',
@@ -28,6 +46,7 @@ export const roles: Role[] = [
     start: '2013-04',
     end: '2016-06',
     summary: 'Backend i .NET, ASP.NET MVC og Umbraco, plus frontend i JavaScript.',
+    tech: ['C# / .NET', 'Umbraco', 'JavaScript', 'HTML & CSS'],
   },
   {
     company: 'Brinth & Hillerup A/S',
@@ -35,6 +54,7 @@ export const roles: Role[] = [
     start: '2012-09',
     end: '2013-04',
     summary: 'Scandia Housings website på Umbraco og deres forretningssystemer.',
+    tech: ['C# / .NET', 'Umbraco', 'HTML & CSS'],
   },
   {
     company: 'SystemaWeb',
@@ -43,6 +63,7 @@ export const roles: Role[] = [
     end: '2013-01',
     branch: 'systemaweb',
     summary: 'Egen virksomhed. Fra IT-support til web og software på Umbraco og Drupal, også som freelancer.',
+    tech: ['Umbraco', 'Drupal', 'PHP', 'HTML & CSS'],
   },
   {
     company: 'Bang & Olufsen R&D',
@@ -57,6 +78,7 @@ export const roles: Role[] = [
     start: '2010-04',
     end: '2011-06',
     summary: 'Automatiseret testmiljø til B&O’s TV-platform og teststrategier.',
+    tech: ['Python'],
   },
   {
     company: 'Bang & Olufsen IT',

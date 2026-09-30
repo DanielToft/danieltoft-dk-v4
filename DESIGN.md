@@ -131,7 +131,7 @@ The site is what `git log --graph` would print if the repository were a career: 
 
 Two voices share the page. Space Grotesk carries anything a person would say: the name, headings, company names, prose. Cascadia Code carries anything a machine would print: hashes, dates, durations, refs, commands, fact keys, remote names, key hints. Rank comes from inversion. The one ink-filled band on the page is HEAD, the current role, and nothing else is allowed to compete with it.
 
-A few moments are deliberately fancy and all of them come from the world. The name decodes out of hex glyphs. The graph lanes draw in step with scroll position. A live uptime counter ticks. `(END)` and `git remote -v` close the page. Everything still reads without JavaScript and without motion.
+A few moments are deliberately fancy and all of them come from the world. The name decodes out of hex glyphs. The graph lanes draw in step with scroll position. A live uptime counter ticks. The skills print as a `git diff --stat` that filters the log like `--grep`. `(END)` and `git remote -v` close the page. Everything still reads without JavaScript and without motion.
 
 **Key Characteristics:**
 - Drenched mint ground, dark green ink, no card surfaces.
@@ -250,10 +250,17 @@ A `git log --graph --author` pager output. It is introduced by a muted mono comm
 - **Lanes:** 3px vertical strokes. The main lane is ink; branch lanes are lavender ink (lane 1) and sand ink (lane 2). The fork and merge are SVG S-curves with round caps. Lanes are handed out top-down like git's columns, each branch taking the lowest lane free for its whole span, and the gutter widens with the lane count. `systemaweb` and `uddannelse` interleave, so the `uddannelse` merge curve crosses the `systemaweb` lane, as git's own graph would.
 - **Nodes:** ring nodes at every role commit. The merge commit gets a smaller, filled node and a mono "Merge branch '…'" message in muted ink.
 - **Root:** the log bottoms out in a ring-node `Initial commit` on the owner's birth date (the one day-precise date), in the same mono muted voice as a merge. Education dates are years only and show no duration.
-- **Rows:** hash, company (title role) with refs, role title, and an optional summary, then the range and duration on the right. Rows are separated by hairlines, per the Hairline Rule.
+- **Rows:** hash, company (title role) with refs, role title, an optional summary and an optional mono muted `Tech:` trailer, then the range and duration on the right. Rows are separated by hairlines, per the Hairline Rule.
+- **Grep:** while a skill is picked in the diffstat, the command line gains `--grep="…"` and rows without it fade to 0.4 (hash, dates, message) with their node ring turning Sage. Lanes never fade, so the timeline stays whole.
 - **HEAD:** the current role is the single inverted band. It has an ink fill, mint text and mint lanes, Soft Sage for the hash and duration, a `rounded.band` corner, and it bleeds out by `spacing.4` on desktop (`spacing.2` on mobile) past the text column.
 - **Motion:** each row is a named view-timeline. Lanes scale in from the top, nodes pop in (scale 0, then 1.25, then 1), and curves are revealed top-down with `clip-path` (a dash offset under-draws once a non-scaling stroke is stretched), all as a pure function of scroll position, so the drawing reverses when you scroll back. It is gated behind `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Otherwise the graph renders static and complete.
 - **Close:** a muted mono `(END)` aligned to the message column.
+
+### Skills Diffstat
+A `git diff --stat <root>..HEAD` from the initial commit, under its own "Kompetencer" heading right above the log.
+- **Lines:** skill name, a muted `|`, the time in muted mono ("14 år", or months under a year), then one `+` per year in ink. Columns are sized in `ch` from the data. Cascadia with ligatures off, step--1 on mobile, step-0 on desktop.
+- **Truth:** the order is curated (what Daniel works with today), and the time is the union of the roles whose `Tech:` trailer lists the skill, so parallel roles count once. It updates live like the other durations.
+- **Interaction:** after hydration each line is a toggle button (`aria-pressed`). Names carry a Sage underline at rest, ink on hover. The picked line goes bold with an ink underline, and the rest fade to 0.45. A polite live region says how many entries match. Without JavaScript it is plain text, with no dead controls.
 
 ### Wordmark (signature component)
 The fitted display name described under Typography. On load (after fonts are ready) and on mouse hover, each glyph cycles through hex characters and settles left to right. The hex pool is limited per slot to glyphs no wider than the letter they replace, so no glyph spills into its neighbour. It does nothing under reduced motion.
