@@ -1,5 +1,5 @@
-/** Year-month as `YYYY-MM`. */
-export type YearMonth = `${number}-${string}`;
+/** Year-month as `YYYY-MM`. A bare `YYYY` when only the year is known, `YYYY-MM-DD` for a single day. */
+export type YearMonth = `${number}-${string}` | `${number}`;
 
 export interface Role {
   company: string;
@@ -67,15 +67,28 @@ export const roles: Role[] = [
   },
 ];
 
-/** Months since epoch-ish, for layout math. */
+/** Newest first. Schools reuse `Role`: `company` is the school, `title` the degree. Source: LinkedIn, which gives years only. */
+export const education: Role[] = [
+  {
+    company: 'Tech College Aalborg',
+    title: 'Datatekniker, speciale i programmering',
+    start: '2006',
+    end: '2012',
+    branch: 'uddannelse',
+  },
+];
+
+/** Months since epoch-ish, for layout math. A bare year counts from January. */
 export const toMonths = (ym: YearMonth): number => {
-  const [y, m] = ym.split('-').map(Number);
+  const [y, m = 1] = ym.split('-').map(Number);
   return y * 12 + (m - 1);
 };
 
 const MONTHS_DA = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
+/** "2006", "jun 2016" or "20. aug 1989": only as precise as the date itself. */
 export const formatYM = (ym: YearMonth): string => {
-  const [y, m] = ym.split('-').map(Number);
-  return `${MONTHS_DA[m - 1]} ${y}`;
+  const [y, m, d] = ym.split('-').map(Number);
+  if (!m) return String(y);
+  return `${d ? `${d}. ` : ''}${MONTHS_DA[m - 1]} ${y}`;
 };

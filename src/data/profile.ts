@@ -2,6 +2,8 @@ export const profile = {
   name: 'Daniel Toft',
   title: 'Softwarearkitekt & udvikler',
   city: 'Aarhus',
+  /** The root of the log: `Initial commit`. */
+  born: '1989-08-20',
   email: 'mail@danieltoft.dk',
   github: { handle: 'DanielToft', url: 'https://github.com/DanielToft' },
   linkedin: { handle: 'danieltoft89', url: 'https://www.linkedin.com/in/danieltoft89' },

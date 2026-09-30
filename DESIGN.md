@@ -11,6 +11,8 @@ colors:
   sage-soft: "#aed0bc"
   lavender: "#e4def3"
   lavender-ink: "#51406e"
+  sand: "#f5e2c8"
+  sand-ink: "#6e4a1f"
 typography:
   display:
     fontFamily: "Space Grotesk Variable, Space Grotesk, system-ui, sans-serif"
@@ -89,6 +91,13 @@ components:
     rounded: "{rounded.pill}"
     padding: "0 0.55em"
     height: "1.5rem"
+  ref-branch-2:
+    backgroundColor: "{colors.sand}"
+    textColor: "{colors.sand-ink}"
+    typography: "{typography.label-ref}"
+    rounded: "{rounded.pill}"
+    padding: "0 0.55em"
+    height: "1.5rem"
   log-row-head:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.mint}"
@@ -127,13 +136,13 @@ A few moments are deliberately fancy and all of them come from the world. The na
 **Key Characteristics:**
 - Drenched mint ground, dark green ink, no card surfaces.
 - Two type voices with a hard boundary: Space Grotesk for people, Cascadia Code for machine data.
-- The commit graph is the page's structure: 3px lanes, ring nodes, one lavender branch.
+- The commit graph is the page's structure: 3px lanes, ring nodes, a lavender and a sand branch.
 - HEAD is the single inverted band. Rank is shown by inversion.
 - Motion is bound to the world (hex decode, scroll-drawn lanes) and is fully removed under reduced motion.
 
 ## Colors
 
-A low-contrast, single-hue green world (tunit mint and its inks), with one lavender accent held back for the parallel branch.
+A low-contrast, single-hue green world (tunit mint and its inks), with two branch accents, lavender and sand, held back for the parallel branches.
 
 ### Primary
 - **Pine Ink** (`ink`): headings, company names, fact values, link text, graph lanes and ring nodes on the main line, focus outlines, selection background, and the fill of the HEAD band and of the copied state.
@@ -141,6 +150,8 @@ A low-contrast, single-hue green world (tunit mint and its inks), with one laven
 ### Tertiary
 - **Branch Lavender** (`lavender`): fill of the branch ref pill only.
 - **Branch Ink** (`lavender-ink`): the branch lane, its fork and merge curves, its ring node, and the pill text. Nothing else.
+- **Branch Sand** (`sand`): fill of the second branch lane's ref pill only.
+- **Sand Ink** (`sand-ink`): the second branch lane, its fork and merge curves, its ring node, and the pill text. Nothing else. 6.2:1 on its pill, 6.7:1 on mint.
 
 ### Neutral
 - **Tunit Mint** (`mint`): the page ground, drenched edge to edge (also `theme-color`). It is also the text colour inside the HEAD band, the HEAD ref pill fill, and the hollow fill inside ring nodes.
@@ -153,7 +164,7 @@ A low-contrast, single-hue green world (tunit mint and its inks), with one laven
 ### Named Rules
 **The Inversion Rule.** Only one element on a page may be ink-filled with mint text at rest: the HEAD row. The copied state of the copy button is the only other inversion, and it is transient feedback, not a surface.
 
-**The Lavender Lane Rule.** Lavender exists for the parallel branch: its lane, curves and node, and its pill. Never use it as a general accent, a hover colour or a highlight.
+**The Branch Lane Rule.** Lavender (lane 1) and sand (lane 2) exist for the parallel branches: their lanes, curves and nodes, and their pills. The colour belongs to the lane, not to the kind of branch. Never use either as a general accent, a hover colour or a highlight.
 
 **The Drenched Ground Rule.** Mint is the page. Don't lay tinted panels or cards over it. Paper appears only at control scale (keys, the copy button).
 
@@ -224,7 +235,7 @@ Tactile but quiet. The only button is copy-email.
 
 ### Chips (ref pills)
 - **HEAD ref:** "HEAD -> main" in a mint pill with ink text. It lives only inside the inverted HEAD band.
-- **Branch ref:** the branch name in a lavender pill with lavender-ink text, on the branch commit only.
+- **Branch ref:** the branch name in its lane's pill (lavender with lavender-ink text, or sand with sand-ink text), on the branch commit only.
 - Both are Cascadia 600 at 0.8rem, 1.5rem high, and carry a screen-reader prefix that explains the ref.
 
 ### Links
@@ -236,11 +247,12 @@ Cascadia at 0.78em (0.72rem in the hero list), at least 1.6em square, Paper fill
 
 ### Commit Log (signature component)
 A `git log --graph --author` pager output. It is introduced by a muted mono command line with a bold ink `$`.
-- **Lanes:** 3px vertical strokes. The main lane is ink and the branch lane is lavender ink, and the fork and merge are SVG S-curves with round caps.
+- **Lanes:** 3px vertical strokes. The main lane is ink; branch lanes are lavender ink (lane 1) and sand ink (lane 2). The fork and merge are SVG S-curves with round caps. Lanes are handed out top-down like git's columns, each branch taking the lowest lane free for its whole span, and the gutter widens with the lane count. `systemaweb` and `uddannelse` interleave, so the `uddannelse` merge curve crosses the `systemaweb` lane, as git's own graph would.
 - **Nodes:** ring nodes at every role commit. The merge commit gets a smaller, filled node and a mono "Merge branch '…'" message in muted ink.
+- **Root:** the log bottoms out in a ring-node `Initial commit` on the owner's birth date (the one day-precise date), in the same mono muted voice as a merge. Education dates are years only and show no duration.
 - **Rows:** hash, company (title role) with refs, role title, and an optional summary, then the range and duration on the right. Rows are separated by hairlines, per the Hairline Rule.
 - **HEAD:** the current role is the single inverted band. It has an ink fill, mint text and mint lanes, Soft Sage for the hash and duration, a `rounded.band` corner, and it bleeds out by `spacing.4` on desktop (`spacing.2` on mobile) past the text column.
-- **Motion:** each row is a named view-timeline. Lanes scale in from the top, nodes pop in (scale 0, then 1.25, then 1), and curves draw by dash offset, all as a pure function of scroll position, so the drawing reverses when you scroll back. It is gated behind `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Otherwise the graph renders static and complete.
+- **Motion:** each row is a named view-timeline. Lanes scale in from the top, nodes pop in (scale 0, then 1.25, then 1), and curves are revealed top-down with `clip-path` (a dash offset under-draws once a non-scaling stroke is stretched), all as a pure function of scroll position, so the drawing reverses when you scroll back. It is gated behind `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Otherwise the graph renders static and complete.
 - **Close:** a muted mono `(END)` aligned to the message column.
 
 ### Wordmark (signature component)
@@ -262,7 +274,7 @@ A mono key/value list with muted keys and ink values. The uptime value ticks eve
 ### Don't:
 - **Don't** turn it into a terminal costume: no black screen, no green-on-black prompt applied across the page.
 - **Don't** put log entries or content in cards, tinted panels or shadowed boxes.
-- **Don't** use lavender anywhere other than the branch lane and its pill.
+- **Don't** use lavender or sand anywhere other than the branch lanes and their pills.
 - **Don't** add a second inverted band or another ink-filled surface at rest.
 - **Don't** set names, headings or prose in Cascadia Code.
 - **Don't** add box-shadows.
