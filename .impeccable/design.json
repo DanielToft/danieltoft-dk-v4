@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-30T10:21:28.741Z",
+  "title": "Design System: danieltoft.dk",
+  "extensions": {
+    "colorMeta": {
+      "mint": {
+        "role": "neutral",
+        "displayName": "Tunit Mint",
+        "canonical": "oklch(94.1% 0.038 164.9)",
+        "tonalRamp": [
+          "#030e09",
+          "#192821",
+          "#2c463b",
+          "#4a6558",
+          "#6b887a",
+          "#8fad9f",
+          "#b5d3c4",
+          "#e1f4eb"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(98.5% 0.004 157.2)",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#232423",
+          "#3e403f",
+          "#5c5e5d",
+          "#7e817f",
+          "#a2a5a3",
+          "#c8cbc9",
+          "#edefee"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Pine Ink",
+        "canonical": "oklch(37.8% 0.054 167.7)",
+        "tonalRamp": [
+          "#000f08",
+          "#132921",
+          "#1f493a",
+          "#3e6858",
+          "#608b7a",
+          "#84b09e",
+          "#a9d6c4",
+          "#dbf6ea"
+        ]
+      },
+      "ink-body": {
+        "role": "neutral",
+        "displayName": "Moss Body",
+        "canonical": "oklch(42.6% 0.047 162.5)",
+        "tonalRamp": [
+          "#010f08",
+          "#172820",
+          "#274838",
+          "#456656",
+          "#678978",
+          "#8bae9c",
+          "#b0d5c1",
+          "#dff5e9"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Lichen Muted",
+        "canonical": "oklch(49.7% 0.035 164.1)",
+        "tonalRamp": [
+          "#040e09",
+          "#1a2721",
+          "#2e463b",
+          "#4b6458",
+          "#6d877b",
+          "#91ac9f",
+          "#b6d2c4",
+          "#e2f3eb"
+        ]
+      },
+      "sage": {
+        "role": "neutral",
+        "displayName": "Sage",
+        "canonical": "oklch(74.1% 0.054 159.5)",
+        "tonalRamp": [
+          "#000f07",
+          "#15291e",
+          "#244935",
+          "#426753",
+          "#648b75",
+          "#88b099",
+          "#add6be",
+          "#ddf6e7"
+        ]
+      },
+      "sage-soft": {
+        "role": "neutral",
+        "displayName": "Soft Sage",
+        "canonical": "oklch(82.7% 0.046 159.4)",
+        "tonalRamp": [
+          "#020f07",
+          "#18281f",
+          "#294737",
+          "#476654",
+          "#698977",
+          "#8dae9b",
+          "#b2d4c0",
+          "#e0f5e8"
+        ]
+      },
+      "lavender": {
+        "role": "tertiary",
+        "displayName": "Branch Lavender",
+        "canonical": "oklch(91.2% 0.029 298.9)",
+        "tonalRamp": [
+          "#0c0a12",
+          "#25222b",
+          "#423d4d",
+          "#605a6c",
+          "#827d90",
+          "#a7a1b5",
+          "#cdc7db",
+          "#f0ecf9"
+        ]
+      },
+      "lavender-ink": {
+        "role": "tertiary",
+        "displayName": "Branch Ink",
+        "canonical": "oklch(41.0% 0.077 300.0)",
+        "tonalRamp": [
+          "#0e061b",
+          "#281f37",
+          "#463562",
+          "#645383",
+          "#8776a8",
+          "#ac9ace",
+          "#d2c0f6",
+          "#f3e8ff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Wordmark",
+        "purpose": "The fitted name only; 100cqi / 4.676 with -0.047em side-bearing offset and the f–t pair at -0.062em."
+      },
+      "headline": {
+        "displayName": "Section Headline",
+        "purpose": "Erfaring and Kontakt headings."
+      },
+      "headline-remote": {
+        "displayName": "Remote URL",
+        "purpose": "Contact URLs in the git remote -v close."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "One-line role statement under the wordmark."
+      },
+      "title": {
+        "displayName": "Company",
+        "purpose": "Company names in log rows."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Bio and role summaries, Moss Body."
+      },
+      "label-data": {
+        "displayName": "Machine Data",
+        "purpose": "Hashes, dates, durations, facts, commands, remote names."
+      },
+      "label-ref": {
+        "displayName": "Ref",
+        "purpose": "HEAD and branch ref pills."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Shared easing for link and button state transitions."
+      },
+      {
+        "name": "state-transition",
+        "value": "160ms",
+        "purpose": "Duration of colour and border transitions."
+      },
+      {
+        "name": "hex-decode",
+        "value": "glyph swap every 48ms; glyph i settles at 260ms + i*70ms + rand(0-140ms)",
+        "purpose": "Wordmark decode on load (after fonts ready) and on mouse hover; off under reduced motion."
+      },
+      {
+        "name": "lane-draw",
+        "value": "view-timeline --row; scaleY 0 to 1; top cover 0-14%, through cover 0-26%, bottom and after-out cover 10-26%",
+        "purpose": "Scroll-bound, reversible lane drawing; static when unsupported or reduced motion."
+      },
+      {
+        "name": "node-pop",
+        "value": "scale 0, 1.25 at 70%, 1; cover 6-12%",
+        "purpose": "Commit node arrival bound to scroll."
+      },
+      {
+        "name": "curve-draw",
+        "value": "stroke-dashoffset 1 to 0; fork-in cover 0-12%, merge-out cover 10-18%",
+        "purpose": "Fork and merge curves."
+      },
+      {
+        "name": "copy-feedback",
+        "value": "2200ms",
+        "purpose": "How long the copied state holds before returning to idle."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "fine-pointer",
+        "value": "(hover: hover) and (pointer: fine)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "HEAD Ref",
+      "kind": "chip",
+      "refersTo": "ref-head",
+      "description": "HEAD -> main pill, only inside the inverted HEAD band.",
+      "html": "<div class=\"ds-band\"><span class=\"ds-ref ds-ref-head\">HEAD -&gt; main</span></div>",
+      "css": ".ds-band{background:var(--ink,#214b3c);padding:12px;display:inline-block;border-radius:2px}.ds-ref{display:inline-flex;align-items:center;height:1.5rem;padding:0 .55em;border-radius:999px;font:600 .8rem/1 var(--font-mono,\"Cascadia Code\",ui-monospace,monospace);letter-spacing:0;font-variant-ligatures:contextual}.ds-ref-head{background:var(--mint,#d5f4e5);color:var(--ink,#214b3c)}"
+    },
+    {
+      "name": "Branch Ref",
+      "kind": "chip",
+      "refersTo": "ref-branch",
+      "description": "Lavender pill naming the parallel branch; the only use of lavender outside the branch lane.",
+      "html": "<span class=\"ds-ref ds-ref-branch\">systemaweb</span>",
+      "css": ".ds-ref{display:inline-flex;align-items:center;height:1.5rem;padding:0 .55em;border-radius:999px;font:600 .8rem/1 var(--font-mono,\"Cascadia Code\",ui-monospace,monospace)}.ds-ref-branch{background:var(--lavender,#e4def3);color:var(--lavender-ink,#51406e)}"
+    },
+    {
+      "name": "Copy Button",
+      "kind": "button",
+      "refersTo": "button-copy",
+      "description": "Pill button that copies the email; inverts when copied.",
+      "html": "<button type=\"button\" class=\"ds-copy\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"5.5\" y=\"5.5\" width=\"8\" height=\"8\" rx=\"1.5\"/><path d=\"M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5\"/></svg><span>Kopiér</span></button> <button type=\"button\" class=\"ds-copy ds-copy-done\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M3 8.5l3 3 7-7\"/></svg><span>Kopieret</span></button>",
+      "css": ".ds-copy{display:inline-flex;align-items:center;gap:.5rem;height:2.25rem;padding:0 1rem;border:1px solid var(--sage,#8eb69f);border-radius:999px;background:var(--paper,#f8fbf9);color:var(--ink,#214b3c);font:600 .875rem/1 var(--font-sans,\"Space Grotesk\",system-ui,sans-serif);cursor:pointer;transition:background-color 160ms cubic-bezier(.16,1,.3,1),border-color 160ms cubic-bezier(.16,1,.3,1),color 160ms cubic-bezier(.16,1,.3,1)}.ds-copy:hover{border-color:var(--ink,#214b3c)}.ds-copy:active{transform:translateY(1px)}.ds-copy:focus-visible{outline:2px solid var(--ink,#214b3c);outline-offset:3px}.ds-copy-done{border-color:var(--ink,#214b3c);background:var(--ink,#214b3c);color:var(--mint,#d5f4e5)}.ds-copy svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}"
+    },
+    {
+      "name": "Keyboard Key",
+      "kind": "custom",
+      "refersTo": "kbd",
+      "description": "Shortcut hint for e, g, l.",
+      "html": "<span class=\"ds-keys\"><kbd class=\"ds-kbd\">e</kbd><kbd class=\"ds-kbd\">g</kbd><kbd class=\"ds-kbd\">l</kbd></span>",
+      "css": ".ds-keys{display:inline-flex;gap:.25rem}.ds-kbd{display:inline-grid;place-items:center;min-width:1.6em;height:1.6em;padding:0 .35em;border:1px solid var(--sage,#8eb69f);border-bottom-width:2px;border-radius:5px;background:var(--paper,#f8fbf9);color:var(--ink,#214b3c);font:.78em/1 var(--font-mono,\"Cascadia Code\",ui-monospace,monospace)}"
+    },
+    {
+      "name": "Link",
+      "kind": "custom",
+      "description": "Inline link with sage underline, and the contact-link variant whose underline is hidden at rest.",
+      "html": "<p class=\"ds-p\">Kig i <a class=\"ds-link\" href=\"#\">kilden</a>. <a class=\"ds-link-strong\" href=\"#\">mail@danieltoft.dk</a></p>",
+      "css": ".ds-p{color:var(--ink-body,#365747);font:1rem/1.55 var(--font-sans,\"Space Grotesk\",system-ui,sans-serif)}.ds-link{color:inherit;text-decoration:underline 2px var(--sage,#8eb69f);text-underline-offset:.22em;transition:text-decoration-color 160ms cubic-bezier(.16,1,.3,1)}.ds-link:hover{text-decoration-color:currentColor}.ds-link-strong{color:var(--ink,#214b3c);font-weight:600;text-decoration:underline 2px transparent;text-underline-offset:.22em;transition:text-decoration-color 160ms cubic-bezier(.16,1,.3,1)}.ds-link-strong:hover{text-decoration-color:var(--ink,#214b3c)}.ds-link:focus-visible,.ds-link-strong:focus-visible{outline:2px solid var(--ink,#214b3c);outline-offset:3px;border-radius:4px}"
+    },
+    {
+      "name": "Commit Log",
+      "kind": "custom",
+      "refersTo": "log-row-head",
+      "description": "git log --graph rows: 3px lanes, ring nodes, filled merge node, HEAD as the single inverted band, hairline rules.",
+      "html": "<ol class=\"ds-log\"><li class=\"ds-row ds-head\"><span class=\"ds-g\"><span class=\"ds-lane ds-bottom\"></span><span class=\"ds-node\"></span></span><span class=\"ds-hash\">7a54036</span><div><div class=\"ds-co\">ILLUMI A/S <span class=\"ds-pill\">HEAD -&gt; main</span></div><div class=\"ds-ti\">System Architect</div></div><span class=\"ds-when\">jun 2016 – nu<br><span class=\"ds-dur\">10 år 3 mdr</span></span></li><li class=\"ds-row\"><span class=\"ds-g\"><span class=\"ds-lane ds-through\"></span><span class=\"ds-node\"></span></span><span class=\"ds-hash\">02d3d72</span><div><div class=\"ds-co\">NöRD A/S</div><div class=\"ds-ti\">System Developer</div><p class=\"ds-sum\">Backend i .NET, ASP.NET MVC og Umbraco.</p></div><span class=\"ds-when\">apr 2013 – jun 2016<br><span class=\"ds-dur\">3 år 2 mdr</span></span></li><li class=\"ds-row ds-merge\"><span class=\"ds-g\"><span class=\"ds-lane ds-top\"></span><span class=\"ds-node\"></span></span><span class=\"ds-hash\">50618d7</span><div class=\"ds-mm\">Merge branch 'systemaweb'</div><span class=\"ds-when\">jan 2013</span></li></ol>",
+      "css": ".ds-log{--lane:#214b3c;list-style:none;margin:0;padding:0;background:var(--mint,#d5f4e5);font-family:var(--font-sans,\"Space Grotesk\",system-ui,sans-serif);color:var(--ink-body,#365747)}.ds-row{position:relative;display:grid;grid-template-columns:3.5rem 5.5rem 1fr 11rem;column-gap:1rem;align-items:start;padding:0 1rem}.ds-row+.ds-row::before{content:\"\";position:absolute;top:0;left:5.5rem;right:1rem;height:1px;background:var(--sage-soft,#aed0bc)}.ds-head{--lane:#d5f4e5;background:var(--ink,#214b3c);color:var(--mint,#d5f4e5);border-radius:2px}.ds-head+.ds-row::before{display:none}.ds-g{position:relative;align-self:stretch;min-height:5rem}.ds-lane{position:absolute;left:1rem;width:3px;margin-left:-1.5px;background:var(--lane)}.ds-bottom{top:2.5rem;bottom:0}.ds-through{top:0;bottom:0}.ds-top{top:0;height:2.5rem}.ds-node{position:absolute;box-sizing:border-box;top:calc(2.5rem - .4375rem);left:calc(1rem - .4375rem);width:.875rem;height:.875rem;border:3px solid var(--lane);border-radius:50%;background:var(--mint,#d5f4e5)}.ds-merge .ds-node{width:.625rem;height:.625rem;top:calc(2.5rem - .3125rem);left:calc(1rem - .3125rem);background:var(--lane)}.ds-hash,.ds-when,.ds-mm{font:.875rem/2rem var(--font-mono,\"Cascadia Code\",ui-monospace,monospace);font-variant-numeric:tabular-nums;padding-top:1.5rem}.ds-hash,.ds-dur,.ds-mm{color:var(--ink-muted,#50695d)}.ds-when{color:var(--ink,#214b3c);text-align:right}.ds-head .ds-hash,.ds-head .ds-dur{color:var(--sage-soft,#aed0bc)}.ds-head .ds-when{color:var(--mint,#d5f4e5)}.ds-row>div{padding:1.5rem 0}.ds-co{display:flex;gap:.75rem;align-items:center;color:var(--ink,#214b3c);font-size:1.35rem;font-weight:600;line-height:2rem;letter-spacing:-.02em}.ds-ti{color:var(--ink,#214b3c);font-weight:500}.ds-head .ds-co,.ds-head .ds-ti{color:var(--mint,#d5f4e5)}.ds-sum{margin:.5rem 0 0}.ds-pill{display:inline-flex;align-items:center;height:1.5rem;padding:0 .55em;border-radius:999px;font:600 .8rem/1 var(--font-mono,\"Cascadia Code\",ui-monospace,monospace);letter-spacing:0;font-variant-ligatures:contextual;background:var(--mint,#d5f4e5);color:var(--ink,#214b3c)}"
+    },
+    {
+      "name": "Remote Row",
+      "kind": "nav",
+      "description": "git remote -v contact row: mono remote name, large grotesk URL, hairline rules.",
+      "html": "<ul class=\"ds-remotes\"><li><span class=\"ds-rname\">email</span><a class=\"ds-rurl\" href=\"#\">mail@danieltoft.dk</a></li><li><span class=\"ds-rname\">github</span><a class=\"ds-rurl\" href=\"#\">github.com/DanielToft</a></li></ul>",
+      "css": ".ds-remotes{list-style:none;margin:0;padding:0}.ds-remotes li{display:grid;grid-template-columns:9ch 1fr;align-items:center;gap:.25rem 1rem;padding-block:1.5rem;border-top:1px solid var(--sage-soft,#aed0bc)}.ds-remotes li:last-child{border-bottom:1px solid var(--sage-soft,#aed0bc)}.ds-rname{color:var(--ink-muted,#50695d);font:.875rem var(--font-mono,\"Cascadia Code\",ui-monospace,monospace)}.ds-rurl{justify-self:start;color:var(--ink,#214b3c);font:600 clamp(1.25rem,.85rem + 2.2vw,2.5rem)/1.15 var(--font-sans,\"Space Grotesk\",system-ui,sans-serif);letter-spacing:-.035em;text-decoration:underline 3px transparent;text-underline-offset:.16em;transition:text-decoration-color 160ms cubic-bezier(.16,1,.3,1)}.ds-rurl:hover{text-decoration-color:var(--ink,#214b3c)}.ds-rurl:focus-visible{outline:2px solid var(--ink,#214b3c);outline-offset:3px;border-radius:4px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Pager on Mint",
+    "overview": "The site is what `git log --graph` would print if the repository were a career: a pager's output, set as a readable page. The ground is a drenched mint taken from tunit.dev and never broken into panels; everything sits directly on it in dark green ink. Structure comes from typography, hairline rules and the commit graph itself, not from containers. It is quiet, flat and exact, a little nerdy because the type is. It doesn't dress up as a terminal.\n\nTwo voices share the page. Space Grotesk carries anything a person would say: the name, headings, company names, prose. Cascadia Code carries anything a machine would print: hashes, dates, durations, refs, commands, fact keys, remote names, key hints. Rank comes from inversion. The one ink-filled band on the page is HEAD, the current role, and nothing else is allowed to compete with it.\n\nA few moments are deliberately fancy and all of them come from the world. The name decodes out of hex glyphs. The graph lanes draw in step with scroll position. A live uptime counter ticks. `(END)` and `git remote -v` close the page. Everything still reads without JavaScript and without motion.",
+    "keyCharacteristics": [
+      "Drenched mint ground, dark green ink, no card surfaces.",
+      "Two type voices with a hard boundary: Space Grotesk for people, Cascadia Code for machine data.",
+      "The commit graph is the page's structure: 3px lanes, ring nodes, one lavender branch.",
+      "HEAD is the single inverted band. Rank is shown by inversion.",
+      "Motion is bound to the world (hex decode, scroll-drawn lanes) and is fully removed under reduced motion."
+    ],
+    "rules": [
+      {
+        "name": "The Inversion Rule",
+        "body": "Only one element on a page may be ink-filled with mint text at rest: the HEAD row. The copied state of the copy button is the only other inversion, and it is transient feedback, not a surface.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lavender Lane Rule",
+        "body": "Lavender exists for the parallel branch: its lane, curves and node, and its pill. Never use it as a general accent, a hover colour or a highlight.",
+        "section": "colors"
+      },
+      {
+        "name": "The Drenched Ground Rule",
+        "body": "Mint is the page. Don't lay tinted panels or cards over it. Paper appears only at control scale (keys, the copy button).",
+        "section": "colors"
+      },
+      {
+        "name": "The Machine Voice Rule",
+        "body": "Cascadia Code is for data a machine would print: hashes, dates, durations, refs, commands, key-value facts, remote names, kbd. Names, headings and prose are never set in mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Fitted Wordmark Rule",
+        "body": "The name is fitted to the column rather than sized on a type step. If the name or weight changes, re-measure the ink width and the side bearing. Don't approximate them with a vw clamp.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Entries are divided by 1px Soft Sage rules, never boxed. In the log, the rule starts after the graph gutter and never crosses the lanes. It is also omitted directly under the HEAD band.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Pager Rule",
+        "body": "Pager output has no elevation. Don't add box-shadows, blurs or floating surfaces. Rank comes from inversion and weight.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the mint ground drenched edge to edge and set all text in the ink family on it.",
+      "Do set every machine-printed datum (hashes, dates, durations, refs, commands, fact keys, remote names, keys) in Cascadia Code with tabular numerals, and every name, heading and sentence in Space Grotesk.",
+      "Do separate entries with 1px Soft Sage hairlines that stop short of the graph gutter.",
+      "Do keep HEAD as the one inverted ink band, with mint text and mint lanes.",
+      "Do bind decorative motion to the world (hex decode, scroll-drawn lanes), and give it a complete static fallback that removes it under reduced motion.",
+      "Do use one 160ms ease-out (`cubic-bezier(0.16, 1, 0.3, 1)`) for state transitions."
+    ],
+    "donts": [
+      "Don't turn it into a terminal costume: no black screen, no green-on-black prompt applied across the page.",
+      "Don't put log entries or content in cards, tinted panels or shadowed boxes.",
+      "Don't use lavender anywhere other than the branch lane and its pill.",
+      "Don't add a second inverted band or another ink-filled surface at rest.",
+      "Don't set names, headings or prose in Cascadia Code.",
+      "Don't add box-shadows."
+    ]
+  }
+}

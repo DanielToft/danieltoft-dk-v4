@@ -1,0 +1,306 @@
+---
+import Base from '../layouts/Base.astro';
+import Wordmark from '../components/Wordmark.svelte';
+import Uptime from '../components/Uptime.svelte';
+import Experience from '../components/Experience.svelte';
+import CopyEmail from '../components/CopyEmail.svelte';
+import Shortcuts from '../components/Shortcuts.svelte';
+import { profile } from '../data/profile';
+import { roles, formatYM } from '../data/experience';
+
+const current = roles.find((r) => r.end === null)!;
+const first = roles.reduce((a, b) => (a.start < b.start ? a : b));
+const builtAt = Date.now();
+const year = new Date(builtAt).getFullYear();
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+---
+
+<Base
+  title={`${profile.name} · ${profile.title}`}
+  description={`${profile.name}, ${profile.lead.toLowerCase()} ${current.title} hos ${current.company}. Erfaring, GitHub og kontakt.`}
+>
+  <a class="skip" href="#erfaring">Spring til erfaring</a>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="mark">
+        <Wordmark client:load text={profile.name} />
+      </div>
+
+      <div class="intro">
+        <div class="about">
+          <p class="lead">{profile.lead}</p>
+          <p class="bio">{profile.about}</p>
+        </div>
+
+        <div class="side">
+          <dl class="facts">
+            <div><dt>rolle</dt><dd>{current.title}, {current.company}</dd></div>
+            <div><dt>sted</dt><dd>{profile.city}</dd></div>
+            <div><dt>siden</dt><dd>{formatYM(first.start)}</dd></div>
+            <div>
+              <dt>oppetid</dt>
+              <dd><Uptime client:idle since={`${first.start}-01`} builtAt={builtAt} /></dd>
+            </div>
+          </dl>
+
+          <ul class="links" aria-label="Kontakt">
+            <li>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              <kbd title="Tryk e">e</kbd>
+            </li>
+            <li>
+              <a href={profile.github.url}>GitHub</a>
+              <kbd title="Tryk g">g</kbd>
+            </li>
+            <li>
+              <a href={profile.linkedin.url}>LinkedIn</a>
+              <kbd title="Tryk l">l</kbd>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="erfaring" class="experience wrap" aria-labelledby="erfaring-h">
+      <h2 id="erfaring-h">Erfaring</h2>
+      <Experience />
+    </section>
+  </main>
+
+  <footer class="contact wrap" aria-labelledby="kontakt-h">
+    <h2 id="kontakt-h">Kontakt</h2>
+    <p class="cmd" aria-hidden="true"><span class="prompt">$</span> git remote -v</p>
+
+    <ul class="remotes">
+      <li>
+        <span class="rname">email</span>
+        <a class="rurl" href={`mailto:${profile.email}`}>{profile.email}</a>
+        <span class="raction"><CopyEmail client:visible email={profile.email} /></span>
+      </li>
+      <li>
+        <span class="rname">github</span>
+        <a class="rurl" href={profile.github.url}>{bare(profile.github.url)}</a>
+      </li>
+      <li>
+        <span class="rname">linkedin</span>
+        <a class="rurl" href={profile.linkedin.url}>{bare(profile.linkedin.url)}</a>
+      </li>
+    </ul>
+
+    <p class="colophon">
+      <span>© {year} {profile.name}</span>
+      <span class="keys">Genveje <kbd>e</kbd> <kbd>g</kbd> <kbd>l</kbd></span>
+    </p>
+  </footer>
+
+  <script>
+    import { duration } from '../data/log';
+    import type { YearMonth } from '../data/experience';
+
+    const now = new Date();
+    const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}` as YearMonth;
+    for (const el of document.querySelectorAll<HTMLElement>('[data-since]')) {
+      el.textContent = duration(el.dataset.since as YearMonth, ym);
+    }
+  </script>
+
+  <Shortcuts client:idle email={profile.email} github={profile.github.url} linkedin={profile.linkedin.url} />
+</Base>
+
+<style>
+  /* ---- hero ---- */
+  .hero {
+    padding-block: clamp(2rem, 5vw, 3.5rem) 0;
+  }
+
+  .mark {
+    container-type: inline-size;
+  }
+
+  .intro {
+    display: grid;
+    gap: var(--space-6);
+    margin-top: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .lead {
+    color: var(--ink);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+
+  .bio {
+    max-width: 40rem;
+    margin-top: var(--space-4);
+    font-size: var(--step-0);
+  }
+
+  .facts {
+    display: grid;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .facts div {
+    display: grid;
+    grid-template-columns: 7.5ch minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .facts dt {
+    color: var(--ink-muted);
+  }
+
+  .facts dd {
+    color: var(--ink);
+  }
+
+  .links {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+
+  .links li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--sage-soft);
+  }
+
+  .links a {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration-color: transparent;
+  }
+
+  .links a:hover {
+    text-decoration-color: var(--ink);
+  }
+
+  .links kbd {
+    font-size: 0.72rem;
+  }
+
+  /* ---- experience ---- */
+  .experience {
+    padding-top: clamp(3rem, 5.5vw, 4.25rem);
+  }
+
+  .experience h2,
+  .contact h2 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  /* ---- contact ---- */
+  .contact {
+    padding-block: clamp(4.5rem, 10vw, 8rem) var(--space-6);
+  }
+
+  .cmd {
+    margin-block: var(--space-5) var(--space-3);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .prompt {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .remotes li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-1) var(--space-4);
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--sage-soft);
+  }
+
+  .remotes li:last-child {
+    border-bottom: 1px solid var(--sage-soft);
+  }
+
+  .rname {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .rurl {
+    justify-self: start;
+    color: var(--ink);
+    font-size: clamp(1.25rem, 0.85rem + 2.2vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    overflow-wrap: anywhere;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.16em;
+  }
+
+  .rurl:hover {
+    text-decoration-color: var(--ink);
+  }
+
+  .raction {
+    justify-self: start;
+  }
+
+  .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-7);
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+  }
+
+  .keys {
+    display: none;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .keys {
+      display: inline-flex;
+    }
+  }
+
+  @media (hover: none) {
+    .links kbd {
+      display: none;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .intro {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .remotes li {
+      grid-template-columns: 9ch minmax(0, 1fr) auto;
+      padding-block: var(--space-5);
+    }
+
+    .raction {
+      justify-self: end;
+    }
+  }
+</style>

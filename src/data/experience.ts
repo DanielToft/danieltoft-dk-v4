@@ -1,0 +1,81 @@
+/** Year-month as `YYYY-MM`. */
+export type YearMonth = `${number}-${string}`;
+
+export interface Role {
+  company: string;
+  title: string;
+  start: YearMonth;
+  /** `null` while the role is current. */
+  end: YearMonth | null;
+  url?: string;
+  summary?: string;
+  /** Set when the role ran in parallel with the main line: drawn as its own branch. */
+  branch?: string;
+}
+
+/** Newest first. Source: the previous danieltoft.dk. */
+export const roles: Role[] = [
+  {
+    company: 'ILLUMI A/S',
+    title: 'System Architect',
+    start: '2016-06',
+    end: null,
+    url: 'https://www.illumi.dk',
+  },
+  {
+    company: 'NöRD A/S',
+    title: 'System Developer',
+    start: '2013-04',
+    end: '2016-06',
+    summary: 'Backend i .NET, ASP.NET MVC og Umbraco, plus frontend i JavaScript.',
+  },
+  {
+    company: 'Brinth & Hillerup A/S',
+    title: 'Lead Developer',
+    start: '2012-09',
+    end: '2013-04',
+    summary: 'Scandia Housings website på Umbraco og deres forretningssystemer.',
+  },
+  {
+    company: 'SystemaWeb',
+    title: 'Owner & Developer',
+    start: '2009-06',
+    end: '2013-01',
+    branch: 'systemaweb',
+    summary: 'Egen virksomhed. Fra IT-support til web og software på Umbraco og Drupal, også som freelancer.',
+  },
+  {
+    company: 'Bang & Olufsen R&D',
+    title: 'Software Developer, lærling',
+    start: '2011-06',
+    end: '2012-10',
+    summary: 'Et værktøj til projektstyring i udviklingsafdelingen.',
+  },
+  {
+    company: 'Bang & Olufsen R&D',
+    title: 'Software Developer, lærling',
+    start: '2010-04',
+    end: '2011-06',
+    summary: 'Automatiseret testmiljø til B&O’s TV-platform og teststrategier.',
+  },
+  {
+    company: 'Bang & Olufsen IT',
+    title: 'Systemkonsulent, lærling',
+    start: '2008-05',
+    end: '2010-04',
+    summary: 'Serverinfrastruktur og mindre applikationer til internt og eksternt brug.',
+  },
+];
+
+/** Months since epoch-ish, for layout math. */
+export const toMonths = (ym: YearMonth): number => {
+  const [y, m] = ym.split('-').map(Number);
+  return y * 12 + (m - 1);
+};
+
+const MONTHS_DA = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+
+export const formatYM = (ym: YearMonth): string => {
+  const [y, m] = ym.split('-').map(Number);
+  return `${MONTHS_DA[m - 1]} ${y}`;
+};
