@@ -1,9 +1,11 @@
-import { roles, toMonths, type Role, type YearMonth } from './experience';
+import { education, roles, toMonths, type Role, type YearMonth } from './experience';
+import { profile } from './profile';
 
-export type Lane = 0 | 1;
+/** 0 is main. Each parallel branch runs in its own lane to the right. */
+export type Lane = number;
 
 export interface LogRow {
-  kind: 'commit' | 'merge';
+  kind: 'commit' | 'merge' | 'root';
   hash: string;
   date: YearMonth;
   lane: Lane;
@@ -16,10 +18,10 @@ export interface LogRow {
   bottom: boolean;
   /** Other lanes passing straight through the row. */
   through: Lane[];
-  /** Merge row: the branch curves out of this node and runs down its own lane. */
-  mergeOut: boolean;
-  /** Fork parent: the branch lane comes in from above and curves into this node. */
-  forkIn: boolean;
+  /** Merge row: the lane the merged branch curves out to and runs down. */
+  mergeOut?: Lane;
+  /** Fork parent: the branch lanes that come in from above and curve into this node. */
+  forkIn: Lane[];
 }
 
 /** FNV-1a, rendered as a 7-char short hash. Stable across builds. */
@@ -33,71 +35,93 @@ const shortHash = (input: string): string => {
 };
 
 interface Event {
-  kind: 'commit' | 'merge';
+  kind: LogRow['kind'];
   date: YearMonth;
-  lane: Lane;
+  /** Commits: the branch the role ran on. Merges: the branch merged. */
+  branch?: string;
   role?: Role;
-  merged?: string;
 }
 
-export const buildLog = (list: Role[] = roles): LogRow[] => {
-  const events: Event[] = list.map((role) => ({
-    kind: 'commit',
-    date: role.start,
-    lane: role.branch ? 1 : 0,
-    role,
-  }));
+/** One role per branch. Row indices in display order: merge row → branch commit → fork parent. */
+interface Span {
+  name: string;
+  merge: number;
+  at: number;
+  fork: number;
+  lane: Lane;
+}
+
+export const buildLog = (list: Role[] = [...roles, ...education], born: YearMonth | null = profile.born): LogRow[] => {
+  const events: Event[] = list.map((role) => ({ kind: 'commit', date: role.start, branch: role.branch, role }));
   for (const role of list) {
     if (role.branch && role.end) {
-      events.push({ kind: 'merge', date: role.end, lane: 0, merged: role.branch });
+      events.push({ kind: 'merge', date: role.end, branch: role.branch });
     }
   }
   // Newest first, like git log. A merge sorts above a commit from the same month.
   events.sort((a, b) => toMonths(b.date) - toMonths(a.date) || (a.kind === 'merge' ? -1 : 1));
+  if (born) events.push({ kind: 'root', date: born });
 
-  const mainIdx = events.flatMap((e, i) => (e.lane === 0 ? [i] : []));
+  const onMain = (e: Event) => e.kind !== 'commit' || !e.branch;
+  const mainIdx = events.flatMap((e, i) => (onMain(e) ? [i] : []));
   const firstMain = mainIdx[0];
   const lastMain = mainIdx[mainIdx.length - 1];
 
-  // Where the branch lane is alive, in display order: merge row → branch commit → fork parent.
-  const mergeAt = events.findIndex((e) => e.kind === 'merge');
-  const branchAt = events.findIndex((e) => e.lane === 1);
-  const forkAt = branchAt === -1 ? -1 : events.findIndex((e, i) => i > branchAt && e.lane === 0);
+  const spans: Span[] = events.flatMap((e, at) => {
+    if (onMain(e)) return [];
+    const name = e.branch!;
+    const merge = events.findIndex((m) => m.kind === 'merge' && m.branch === name);
+    const fork = events.findIndex((f, i) => i > at && onMain(f));
+    return [{ name, merge, at, fork, lane: 0 }];
+  });
+
+  // Like git's columns: top-down, a branch takes the lowest lane free for its whole span.
+  const opens = (s: Span) => (s.merge === -1 ? s.at : s.merge);
+  const closes = (s: Span) => (s.fork === -1 ? s.at : s.fork);
+  for (const s of [...spans].sort((a, b) => opens(a) - opens(b))) {
+    const busy = spans.filter((o) => o.lane && opens(o) <= closes(s) && opens(s) <= closes(o)).map((o) => o.lane);
+    s.lane = 1;
+    while (busy.includes(s.lane)) s.lane++;
+  }
 
   return events.map((e, i) => {
-    const onBranch = e.lane === 1;
+    const own = spans.find((s) => s.at === i);
     const through: Lane[] = [];
-    if (onBranch) {
-      if (i > firstMain && i < lastMain) through.push(0);
-    } else if (branchAt !== -1) {
-      const aboveBranch = mergeAt !== -1 && i > mergeAt && i < branchAt;
-      const belowBranch = i > branchAt && i < forkAt;
-      if (aboveBranch || belowBranch) through.push(1);
+    if (own && i > firstMain && i < lastMain) through.push(0);
+    for (const s of spans) {
+      const aboveBranch = s.merge !== -1 && i > s.merge && i < s.at;
+      const belowBranch = i > s.at && i < s.fork;
+      if (aboveBranch || belowBranch) through.push(s.lane);
     }
 
-    const seed = e.role ? `${e.role.company}|${e.role.start}` : `merge|${e.merged}|${e.date}`;
+    const seed = e.role
+      ? `${e.role.company}|${e.role.start}`
+      : e.kind === 'merge'
+        ? `merge|${e.branch}|${e.date}`
+        : `root|${e.date}`;
 
     return {
       kind: e.kind,
       hash: shortHash(seed),
       date: e.date,
-      lane: e.lane,
+      lane: own?.lane ?? 0,
       role: e.role,
-      merged: e.merged,
+      merged: e.kind === 'merge' ? e.branch : undefined,
       head: i === firstMain && e.role?.end === null,
-      top: onBranch ? mergeAt !== -1 && i > mergeAt : i > firstMain,
-      bottom: onBranch ? forkAt !== -1 : i < lastMain,
+      top: own ? own.merge !== -1 && i > own.merge : i > firstMain,
+      bottom: own ? own.fork !== -1 : i < lastMain,
       through,
-      mergeOut: i === mergeAt,
-      forkIn: i === forkAt,
+      mergeOut: spans.find((s) => s.merge === i)?.lane,
+      forkIn: spans.filter((s) => s.fork === i).map((s) => s.lane),
     };
   });
 };
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-/** "3 år 2 mdr", "7 mdr". */
+/** "3 år 2 mdr", "7 mdr". Empty when a bare year leaves the length unknown. */
 export const duration = (start: YearMonth, end: YearMonth): string => {
+  if (!start.includes('-') || !end.includes('-')) return '';
   const months = toMonths(end) - toMonths(start);
   const y = Math.floor(months / 12);
   const m = months % 12;

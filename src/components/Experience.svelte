@@ -3,6 +3,7 @@
   import { buildLog, duration } from '../data/log';
 
   const rows = buildLog();
+  const lanes = Math.max(...rows.map((r) => r.lane)) + 1;
   const built = new Date();
   const builtYM = `${built.getFullYear()}-${String(built.getMonth() + 1).padStart(2, '0')}` as const;
   const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
@@ -10,29 +11,29 @@
 
 <p class="cmd" aria-hidden="true"><span class="prompt">$</span> git log --graph --author="Daniel Toft"</p>
 
-<ol class="log">
+<ol class="log" style:--lanes={lanes}>
   {#each rows as row (row.hash)}
     <li
       class="row"
       class:head={row.head}
       class:merge={row.kind === 'merge'}
-      class:on-branch={row.lane === 1}
+      class:on-branch={row.lane > 0}
     >
       <span class="g" aria-hidden="true">
         {#if row.top}<span class="lane top l{row.lane}"></span>{/if}
         {#if row.bottom}<span class="lane bottom l{row.lane}"></span>{/if}
         {#each row.through as lane (lane)}<span class="lane through l{lane}"></span>{/each}
-        {#if row.mergeOut}
-          <svg class="curve out" viewBox="0 0 24 24" preserveAspectRatio="none">
-            <path d="M0 0 C0 14 24 10 24 24" pathLength="1" vector-effect="non-scaling-stroke" />
+        {#if row.mergeOut !== undefined}
+          <svg class="curve out l{row.mergeOut}" viewBox="0 0 24 24" preserveAspectRatio="none">
+            <path d="M0 0 C0 14 24 10 24 24" vector-effect="non-scaling-stroke" />
           </svg>
-          <span class="lane after-out l1"></span>
+          <span class="lane after-out l{row.mergeOut}"></span>
         {/if}
-        {#if row.forkIn}
-          <svg class="curve in" viewBox="0 0 24 24" preserveAspectRatio="none">
-            <path d="M24 0 C24 14 0 10 0 24" pathLength="1" vector-effect="non-scaling-stroke" />
+        {#each row.forkIn as lane (lane)}
+          <svg class="curve in l{lane}" viewBox="0 0 24 24" preserveAspectRatio="none">
+            <path d="M24 0 C24 14 0 10 0 24" vector-effect="non-scaling-stroke" />
           </svg>
-        {/if}
+        {/each}
         <span class="node l{row.lane}"></span>
       </span>
 
@@ -47,7 +48,8 @@
               {#if role.end}<time datetime={role.end}>{formatYM(role.end)}</time>{:else}nu{/if}
             </span>
             {#if role.end}
-              <span class="dur">{duration(role.start, role.end)}</span>
+              {@const dur = duration(role.start, role.end)}
+              {#if dur}<span class="dur">{dur}</span>{/if}
             {:else}
               <span class="dur" data-since={role.start}>{duration(role.start, builtYM)}</span>
             {/if}
@@ -57,7 +59,7 @@
           <h3 class="company">
             {#if role.url}<a href={role.url} title={host(role.url)}>{role.company}</a>{:else}{role.company}{/if}
             {#if row.head}<span class="ref head-ref"><span class="sr-only">nuværende rolle, </span>HEAD -&gt; main</span>{/if}
-            {#if role.branch}<span class="ref branch"><span class="sr-only">parallelt forløb, </span>{role.branch}</span>{/if}
+            {#if role.branch}<span class="ref branch l{row.lane}"><span class="sr-only">parallelt forløb, </span>{role.branch}</span>{/if}
           </h3>
           <p class="title">{role.title}</p>
           {#if role.summary}<p class="summary">{role.summary}</p>{/if}
@@ -68,7 +70,11 @@
           <p class="when"><time datetime={row.date}>{formatYM(row.date)}</time></p>
         </div>
         <div class="msg">
-          <p class="merge-msg">Merge branch '{row.merged}'</p>
+          {#if row.kind === 'root'}
+            <p class="merge-msg">Initial commit<span class="sr-only"> (født)</span></p>
+          {:else}
+            <p class="merge-msg">Merge branch '{row.merged}'</p>
+          {/if}
         </div>
       {/if}
     </li>
@@ -101,16 +107,35 @@
   }
 
   .log {
-    --g-w: 2.75rem;
     --x0: 0.75rem;
-    --x1: 2rem;
+    --lane-gap: 1.125rem;
+    --x1: calc(var(--x0) + var(--lane-gap));
+    --x2: calc(var(--x0) + 2 * var(--lane-gap));
+    --g-w: calc(2 * var(--x0) + (var(--lanes, 2) - 1) * var(--lane-gap));
     --stroke: 3px;
     --node: 0.875rem;
     --node-y: 2rem;
     --pad: 1.25rem;
     --curve-h: 1.5rem;
     --lane-ink: var(--ink);
-    --branch-ink: var(--lavender-ink);
+  }
+
+  /* Per lane: x position, stroke colour and ref pill fill. */
+  .l0 {
+    --x: var(--x0);
+    --c: var(--lane-ink);
+  }
+
+  .l1 {
+    --x: var(--x1);
+    --c: var(--lavender-ink);
+    --c-soft: var(--lavender);
+  }
+
+  .l2 {
+    --x: var(--x2);
+    --c: var(--sand-ink);
+    --c-soft: var(--sand);
   }
 
   .row {
@@ -237,8 +262,8 @@
   }
 
   .branch {
-    background: var(--lavender);
-    color: var(--lavender-ink);
+    background: var(--c-soft);
+    color: var(--c);
   }
 
   /* HEAD: the one inverted band. */
@@ -282,19 +307,11 @@
   /* ---- graph ---- */
   .lane {
     position: absolute;
+    left: var(--x);
     width: var(--stroke);
     margin-left: calc(var(--stroke) / -2);
-    background: var(--lane-ink);
+    background: var(--c);
     transform-origin: top;
-  }
-
-  .lane.l0 {
-    left: var(--x0);
-  }
-
-  .lane.l1 {
-    left: var(--x1);
-    background: var(--branch-ink);
   }
 
   .lane.top {
@@ -320,31 +337,26 @@
   .node {
     position: absolute;
     top: calc(var(--node-y) - var(--node) / 2);
-    left: calc(var(--x0) - var(--node) / 2);
+    left: calc(var(--x) - var(--node) / 2);
     width: var(--node);
     height: var(--node);
-    border: var(--stroke) solid var(--lane-ink);
+    border: var(--stroke) solid var(--c);
     border-radius: 50%;
     background: var(--mint);
   }
 
-  .node.l1 {
-    left: calc(var(--x1) - var(--node) / 2);
-    border-color: var(--branch-ink);
-  }
-
   .merge .node {
     --node: 0.625rem;
-    background: var(--lane-ink);
+    background: var(--c);
   }
 
   .curve {
     position: absolute;
     left: var(--x0);
-    width: calc(var(--x1) - var(--x0));
+    width: calc(var(--x) - var(--x0));
     overflow: visible;
     fill: none;
-    stroke: var(--branch-ink);
+    stroke: var(--c);
     stroke-width: var(--stroke);
     stroke-linecap: round;
   }
@@ -359,11 +371,6 @@
     height: var(--node-y);
   }
 
-  .curve path {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 0;
-  }
-
   .end {
     margin-top: var(--space-4);
     padding-left: calc(var(--g-w) + var(--space-3));
@@ -373,9 +380,8 @@
 
   @media (min-width: 48rem) {
     .log {
-      --g-w: 3.5rem;
       --x0: 1rem;
-      --x1: 2.5rem;
+      --lane-gap: 1.5rem;
       --node-y: 2.5rem;
       --pad: 1.5rem;
     }
@@ -443,8 +449,9 @@
         animation-range: cover 6% cover 12%;
       }
 
-      .curve path {
-        animation: draw-path linear both;
+      /* Curves are revealed top-down: a dash trick breaks on non-uniformly scaled, non-scaling strokes. */
+      .curve {
+        animation: reveal-y linear both;
       }
 
       /*
@@ -453,7 +460,7 @@
       */
       .g .lane,
       .g .node,
-      .g .curve path {
+      .g .curve {
         animation-timeline: --row;
       }
 
@@ -470,11 +477,11 @@
         animation-range: cover 0% cover 26%;
       }
 
-      .curve.in path {
+      .curve.in {
         animation-range: cover 0% cover 12%;
       }
 
-      .curve.out path {
+      .curve.out {
         animation-range: cover 10% cover 18%;
       }
     }
@@ -489,12 +496,13 @@
     }
   }
 
-  @keyframes draw-path {
+  /* Insets reach past the box so the stroke's round caps are never clipped. */
+  @keyframes reveal-y {
     from {
-      stroke-dashoffset: 1;
+      clip-path: inset(calc(var(--stroke) * -1) calc(var(--stroke) * -1) calc(100% + var(--stroke)));
     }
     to {
-      stroke-dashoffset: 0;
+      clip-path: inset(calc(var(--stroke) * -1));
     }
   }
 

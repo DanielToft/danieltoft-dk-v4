@@ -31,7 +31,7 @@ Read on laptops and phones, often after a LinkedIn message or a GitHub profile v
 
 - One page: short about text, experience list, contact links. Projects/portfolio are deliberately out for now (may come later).
 - Shown: name, title, city, email, GitHub, LinkedIn. Not shown: phone number, photo.
-- Experience lists jobs only; education (Tech College Aalborg) is excluded.
+- Experience lists jobs plus education (Tech College Aalborg), which runs as its own `uddannelse` branch. The log's root is an `Initial commit` on the owner's birth date.
 - Must be fully readable without JavaScript; motion must respect reduced-motion.
 
 ## Brand Commitments
@@ -52,6 +52,12 @@ Work history from the current danieltoft.dk (all dates as stated there):
 - Bang & Olufsen R&D: Software Developer / apprentice, Jun 2011 to Oct 2012. Internal project management tool
 - Bang & Olufsen R&D: Software Developer / apprentice, Apr 2010 to Jun 2011. Automated test environment for the TV platform, test strategies
 - Bang & Olufsen IT: System consultant / apprentice, May 2008 to Apr 2010. Server infrastructure, small internal/external applications
+
+Education from LinkedIn (years only; do not add months):
+
+- Tech College Aalborg: Datatekniker, speciale i programmering, 2006 to 2012
+
+Born 20 Aug 1989 (owner-stated), shown as the root commit.
 
 About facts: lives in Aarhus; passion for software design, architecture and web development; many years on Microsoft's .NET stack (C#, ASP.NET, MVC, Umbraco).
 
