@@ -8,6 +8,15 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Git
+
+Keep a flat, linear history on `main`:
+
+- Merge PRs with **rebase** or **squash** — never with a merge commit.
+- Bring a branch up to date by rebasing it on `main` (`git rebase main`), not by merging `main` into it.
+
+Commits and PRs are authored by the developer only: no `Co-Authored-By: Claude` trailers and no "Generated with Claude Code" footers. Claude Code's attribution is switched off in `.claude/settings.json`.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
