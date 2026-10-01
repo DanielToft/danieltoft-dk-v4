@@ -4,6 +4,7 @@ import Wordmark from '../components/Wordmark.svelte';
 import Uptime from '../components/Uptime.svelte';
 import Experience from '../components/Experience.svelte';
 import Skills from '../components/Skills.svelte';
+import Clients from '../components/Clients.svelte';
 import CopyEmail from '../components/CopyEmail.svelte';
 import Shortcuts from '../components/Shortcuts.svelte';
 import { profile } from '../data/profile';
@@ -77,6 +78,11 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
       <h2 id="erfaring-h">Erfaring</h2>
       <Experience />
     </section>
+
+    <section id="kunder" class="clients wrap" aria-labelledby="kunder-h">
+      <h2 id="kunder-h">Kunder</h2>
+      <Clients />
+    </section>
   </main>
 
   <footer class="contact wrap" aria-labelledby="kontakt-h">
@@ -113,6 +119,20 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
     const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}` as YearMonth;
     for (const el of document.querySelectorAll<HTMLElement>('[data-since]')) {
       el.textContent = duration(el.dataset.since as YearMonth, ym);
+    }
+
+    // Long `Kunder:` trailers fold behind "+N flere"; without JS they print in full.
+    for (const more of document.querySelectorAll<HTMLElement>('[data-fold] [data-more]')) {
+      const rest = more.parentElement!.querySelector<HTMLElement>('[data-rest]')!;
+      rest.hidden = true;
+      more.hidden = false;
+      more.querySelector('button')!.addEventListener('click', () => {
+        rest.hidden = false;
+        more.hidden = true;
+        // The button is gone: hand focus to what it revealed.
+        rest.tabIndex = -1;
+        rest.focus();
+      });
     }
   </script>
 
@@ -199,14 +219,16 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
     font-size: 0.72rem;
   }
 
-  /* ---- skills & experience ---- */
+  /* ---- skills, experience & clients ---- */
   .skills,
-  .experience {
+  .experience,
+  .clients {
     padding-top: clamp(3rem, 5.5vw, 4.25rem);
   }
 
   .skills h2,
   .experience h2,
+  .clients h2,
   .contact h2 {
     font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
     font-weight: 600;

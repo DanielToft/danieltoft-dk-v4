@@ -19,7 +19,7 @@ THESIS: Daniel's career is a repository, and the page is its `git log --graph`: 
 
 OWN-WORLD: The ground is drenched tunit mint #D5F4E5 with dark green ink #214B3C. Graph lanes are 3px ink strokes with ring nodes. The branch lane is lavender ink, and the lavender pill is its only use. Names and prose are set in Space Grotesk; hashes, dates, refs and commands in Cascadia Code. There are no cards, only hairline sage row rules. HEAD is the single inverted band (mint on ink), which is rank by inversion.
 
-STORY: Visitors meet the name at full width and a one-line role, and see contact at once. Scrolling down reads backwards in time through the log to the root commit, `(END)`, and then `git remote -v` as the close.
+STORY: Visitors meet the name at full width and a one-line role, and see contact at once. Scrolling down reads backwards in time through the log to the root commit, `(END)`, then the client credits, and `git remote -v` as the close.
 
 FIRST VIEWPORT: "Daniel Toft" fills the content width (Space Grotesk 700, about 15cqi) at the top. Below it on the left, "Softwarearkitekt & udvikler i Aarhus." at step-2 with the about paragraph under it. On the right, a mono key-value list (rolle, sted, siden, oppetid ticking) and three links with kbd hints (e, g, l). The Erfaring heading and the inverted HEAD row begin inside the fold at 1440×900.
 

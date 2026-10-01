@@ -7,6 +7,8 @@
   const built = new Date();
   const builtYM = `${built.getFullYear()}-${String(built.getMonth() + 1).padStart(2, '0')}` as const;
   const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
+  /** A `Kunder:` trailer names this many, then folds the rest behind a button (page script). */
+  const FOLD_AFTER = 3;
 </script>
 
 <p class="cmd" aria-hidden="true">
@@ -67,6 +69,18 @@
           <p class="title">{role.title}</p>
           {#if role.summary}<p class="summary">{role.summary}</p>{/if}
           {#if role.tech}<p class="trailer">Tech: {role.tech.map(techName).join(', ')}</p>{/if}
+          {#if role.clients}
+            {@const shown = role.clients.slice(0, FOLD_AFTER)}
+            {@const rest = role.clients.slice(FOLD_AFTER)}
+            <p class="trailer" data-fold>
+              Kunder: {shown.join(', ')}{#if rest.length}<span data-rest>, {rest.join(', ')}</span><span
+                  data-more
+                  hidden
+                  >, <button type="button" class="more">+{rest.length} flere<span class="sr-only"> kunder</span></button
+                  ></span
+                >{/if}
+            </p>
+          {/if}
         </div>
       {:else}
         <div class="meta">
@@ -246,6 +260,27 @@
     line-height: 1.5rem;
   }
 
+  /* Trailers are consecutive lines, like in a commit message. */
+  .trailer + .trailer {
+    margin-top: 0;
+  }
+
+  .more {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline 2px var(--sage);
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 160ms var(--ease-out);
+  }
+
+  .more:hover {
+    text-decoration-color: currentColor;
+  }
+
   .merge-msg {
     color: var(--ink-muted);
     font-size: var(--step--1);
@@ -310,7 +345,9 @@
     text-decoration-color: var(--mint);
   }
 
-  .head :global(a:focus-visible) {
+  .head :global(a:focus-visible),
+  .head .more:focus-visible,
+  .head [data-rest]:focus-visible {
     outline-color: var(--mint);
   }
 

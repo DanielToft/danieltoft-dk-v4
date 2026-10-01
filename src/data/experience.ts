@@ -18,6 +18,8 @@ export interface Role {
   branch?: string;
   /** Printed as a `Tech:` trailer, and the source of the skills diffstat. */
   tech?: Tech[];
+  /** Printed as a `Kunder:` trailer in this order; past the first few they fold. Each is defined in `clients.ts`. */
+  clients?: string[];
 }
 
 /** Newest first. Source: the previous danieltoft.dk. */
@@ -39,6 +41,16 @@ export const roles: Role[] = [
       { name: 'Aspire', since: '2023-11' },
       { name: 'AI', since: '2023' },
     ],
+    clients: [
+      'Aarhus Festuge',
+      'Statens Serum Institut',
+      'Landbrug & Fødevarer',
+      'NRGi',
+      'Mejeriforeningen',
+      'Unipress',
+      'Habitura',
+      'Ospra',
+    ],
   },
   {
     company: 'NöRD A/S',
@@ -47,6 +59,20 @@ export const roles: Role[] = [
     end: '2016-06',
     summary: 'Backend i .NET, ASP.NET MVC og Umbraco, plus frontend i JavaScript.',
     tech: ['C# / .NET', 'Umbraco', 'Angular', 'JavaScript', 'HTML & CSS'],
+    clients: [
+      'Aarhus Festuge',
+      'NRGi',
+      'Dansk Supermarked',
+      'Faarup Sommerland',
+      'Rationel',
+      'Fibia',
+      'Small Danish Hotels',
+      'Lightyears',
+      'Designa',
+      'Hjem-IS',
+      'Cult',
+      'Sådan Bor Jeg',
+    ],
   },
   {
     company: 'Brinth & Hillerup A/S',
@@ -55,6 +81,7 @@ export const roles: Role[] = [
     end: '2013-04',
     summary: 'Scandia Housings website på Umbraco og deres forretningssystemer.',
     tech: ['C# / .NET', 'Umbraco', 'JavaScript', 'HTML & CSS'],
+    clients: ['Scandia Housing'],
   },
   {
     company: 'SystemaWeb',
@@ -64,6 +91,7 @@ export const roles: Role[] = [
     branch: 'systemaweb',
     summary: 'Egen virksomhed. Fra IT-support til web og software på Umbraco og Drupal, også som freelancer.',
     tech: [ 'C# / .NET', 'Umbraco', 'Drupal', 'PHP', 'Javascript', 'HTML & CSS'],
+    clients: ['Housing Denmark'],
   },
   {
     company: 'Bang & Olufsen R&D',
