@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatYM } from '../data/experience';
+  import { formatYM, techName } from '../data/experience';
   import { buildLog, duration } from '../data/log';
 
   const rows = buildLog();
@@ -9,15 +9,18 @@
   const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 </script>
 
-<p class="cmd" aria-hidden="true"><span class="prompt">$</span> git log --graph --author="Daniel Toft"</p>
+<p class="cmd" aria-hidden="true">
+  <span class="prompt">$</span> git log --graph --author="Daniel Toft"<span data-grep-arg></span>
+</p>
 
-<ol class="log" style:--lanes={lanes}>
+<ol class="log" style:--lanes={lanes} data-log>
   {#each rows as row (row.hash)}
     <li
       class="row"
       class:head={row.head}
       class:merge={row.kind === 'merge'}
       class:on-branch={row.lane > 0}
+      data-tech={row.role?.tech?.map(techName).join('|')}
     >
       <span class="g" aria-hidden="true">
         {#if row.top}<span class="lane top l{row.lane}"></span>{/if}
@@ -63,6 +66,7 @@
           </h3>
           <p class="title">{role.title}</p>
           {#if role.summary}<p class="summary">{role.summary}</p>{/if}
+          {#if role.tech}<p class="trailer">Tech: {role.tech.map(techName).join(', ')}</p>{/if}
         </div>
       {:else}
         <div class="meta">
@@ -89,7 +93,8 @@
   .hash,
   .when,
   .ref,
-  .merge-msg {
+  .merge-msg,
+  .trailer {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
@@ -233,6 +238,14 @@
     color: var(--ink-body);
   }
 
+  .trailer {
+    max-width: 58ch;
+    margin-top: var(--space-2);
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    line-height: 1.5rem;
+  }
+
   .merge-msg {
     color: var(--ink-muted);
     font-size: var(--step--1);
@@ -284,7 +297,8 @@
   }
 
   .head .hash,
-  .head .dur {
+  .head .dur,
+  .head .trailer {
     color: var(--sage-soft);
   }
 
@@ -302,6 +316,22 @@
 
   .head .msg {
     padding-bottom: calc(var(--pad) + var(--space-2));
+  }
+
+  /* `git log --grep` from the skills diffstat: rows it skips fade, the lanes stay whole. */
+  /* Leaves, not .meta/.when: those turn `display: contents` at some widths, where opacity does nothing. */
+  .hash,
+  .when > *,
+  .msg {
+    transition: opacity 160ms var(--ease-out);
+  }
+
+  .row:global([data-miss]) :is(.hash, .when > *, .msg) {
+    opacity: 0.4;
+  }
+
+  .row:global([data-miss]) .node {
+    --c: var(--sage);
   }
 
   /* ---- graph ---- */

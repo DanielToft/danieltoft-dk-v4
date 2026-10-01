@@ -3,16 +3,20 @@ import Base from '../layouts/Base.astro';
 import Wordmark from '../components/Wordmark.svelte';
 import Uptime from '../components/Uptime.svelte';
 import Experience from '../components/Experience.svelte';
+import Skills from '../components/Skills.svelte';
 import CopyEmail from '../components/CopyEmail.svelte';
 import Shortcuts from '../components/Shortcuts.svelte';
 import { profile } from '../data/profile';
 import { roles, formatYM } from '../data/experience';
+import { buildLog } from '../data/log';
+import { buildStats } from '../data/skills';
 
 const current = roles.find((r) => r.end === null)!;
 const first = roles.reduce((a, b) => (a.start < b.start ? a : b));
 const builtAt = Date.now();
 const year = new Date(builtAt).getFullYear();
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+const root = buildLog().find((r) => r.kind === 'root')!.hash;
 ---
 
 <Base
@@ -64,6 +68,11 @@ const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
   </header>
 
   <main>
+    <section id="kompetencer" class="skills wrap" aria-labelledby="kompetencer-h">
+      <h2 id="kompetencer-h">Kompetencer</h2>
+      <Skills client:visible stats={buildStats()} root={root} builtAt={builtAt} />
+    </section>
+
     <section id="erfaring" class="experience wrap" aria-labelledby="erfaring-h">
       <h2 id="erfaring-h">Erfaring</h2>
       <Experience />
@@ -190,11 +199,13 @@ const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
     font-size: 0.72rem;
   }
 
-  /* ---- experience ---- */
+  /* ---- skills & experience ---- */
+  .skills,
   .experience {
     padding-top: clamp(3rem, 5.5vw, 4.25rem);
   }
 
+  .skills h2,
   .experience h2,
   .contact h2 {
     font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
