@@ -34,7 +34,7 @@ export const roles: Role[] = [
       'Angular',
       'HTML & CSS',
       'Azure',
-      'Kubernetes',
+      { name: 'Kubernetes', since: '2020' },
       'DevOps',
       { name: 'Aspire', since: '2023-11' },
       { name: 'AI', since: '2023' },
@@ -46,7 +46,7 @@ export const roles: Role[] = [
     start: '2013-04',
     end: '2016-06',
     summary: 'Backend i .NET, ASP.NET MVC og Umbraco, plus frontend i JavaScript.',
-    tech: ['C# / .NET', 'Umbraco', 'JavaScript', 'HTML & CSS'],
+    tech: ['C# / .NET', 'Umbraco', 'Angular', 'JavaScript', 'HTML & CSS'],
   },
   {
     company: 'Brinth & Hillerup A/S',
@@ -54,7 +54,7 @@ export const roles: Role[] = [
     start: '2012-09',
     end: '2013-04',
     summary: 'Scandia Housings website på Umbraco og deres forretningssystemer.',
-    tech: ['C# / .NET', 'Umbraco', 'HTML & CSS'],
+    tech: ['C# / .NET', 'Umbraco', 'JavaScript', 'HTML & CSS'],
   },
   {
     company: 'SystemaWeb',
@@ -63,13 +63,14 @@ export const roles: Role[] = [
     end: '2013-01',
     branch: 'systemaweb',
     summary: 'Egen virksomhed. Fra IT-support til web og software på Umbraco og Drupal, også som freelancer.',
-    tech: ['Umbraco', 'Drupal', 'PHP', 'HTML & CSS'],
+    tech: [ 'C# / .NET', 'Umbraco', 'Drupal', 'PHP', 'Javascript', 'HTML & CSS'],
   },
   {
     company: 'Bang & Olufsen R&D',
     title: 'Software Developer, lærling',
     start: '2011-06',
     end: '2012-10',
+    tech: [ 'C# / .NET', 'WinForms'],
     summary: 'Et værktøj til projektstyring i udviklingsafdelingen.',
   },
   {
@@ -78,13 +79,14 @@ export const roles: Role[] = [
     start: '2010-04',
     end: '2011-06',
     summary: 'Automatiseret testmiljø til B&O’s TV-platform og teststrategier.',
-    tech: ['Python'],
+    tech: ['C# / .NET', 'Python', 'C'],
   },
   {
     company: 'Bang & Olufsen IT',
     title: 'Systemkonsulent, lærling',
     start: '2008-05',
     end: '2010-04',
+    tech: ['C# / .NET', 'Serverteknologi', 'Netværk'],
     summary: 'Serverinfrastruktur og mindre applikationer til internt og eksternt brug.',
   },
 ];
@@ -94,6 +96,7 @@ export const education: Role[] = [
   {
     company: 'Tech College Aalborg',
     title: 'Datatekniker, speciale i programmering',
+    summary: 'Netværk, serverteknologi og programmering.',
     start: '2006',
     end: '2012',
     branch: 'uddannelse',
