@@ -12,9 +12,7 @@
   --sand: #f5e2c8;
   --sand-ink: #6e4a1f;
 
-  /* Type */
-  --font-sans: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'Cascadia Code Variable', 'Cascadia Code', ui-monospace, Consolas, monospace;
+  /* Type: --font-sans and --font-mono come from the Fonts API (astro.config.mjs). */
 
   --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);

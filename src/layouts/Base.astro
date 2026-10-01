@@ -1,6 +1,5 @@
 ---
-import '@fontsource-variable/space-grotesk';
-import '@fontsource-variable/cascadia-code';
+import { Font } from 'astro:assets';
 import '../styles/tokens.css';
 import '../styles/global.css';
 
@@ -18,6 +17,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Font cssVariable="--font-sans" preload={[{ subset: 'latin' }]} />
+    <Font cssVariable="--font-mono" preload={[{ subset: 'latin' }]} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
