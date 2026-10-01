@@ -259,8 +259,8 @@ A `git log --graph --author` pager output. It is introduced by a muted mono comm
 
 ### Client Credits
 `git log --format='%(trailers:key=Kunder,valueonly)' | awk '!seen[$0]++'` under its own "Kunder" heading, after `(END)` and before Kontakt.
-- **Type:** the command is muted mono; the names it prints are set in Space Grotesk 600 at step-1, because names are spoken (the Machine Voice Rule). They flow as one wrapping line with muted `/` separators, and a name never breaks.
-- **Truth:** the order is the log's: newest role first, each role's own trailer order, every client once. Names with a live site are links (2px Sage underline, ink on hover, the host as title); the rest are plain ink.
+- **Type:** the command is muted mono; the names it prints are set in Space Grotesk 600 at step-1, because names are spoken (the Machine Voice Rule). They flow as one wrapping line with muted `/` separators; a name moves to the next line whole, and only a name wider than the column wraps.
+- **Truth:** the order is the log's: newest role first, each role's own trailer order, every client once. Names with an ILLUMI case or a live site are links (2px Sage underline, ink on hover, the address as title); the rest are plain ink.
 
 ### Skills Diffstat
 A `git diff --stat <root>..HEAD` from the initial commit, under its own "Kompetencer" heading right above the log.

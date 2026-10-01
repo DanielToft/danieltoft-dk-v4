@@ -14,18 +14,28 @@ export interface Client {
   projects?: Project[];
 }
 
-/** Owner-stated and from the owner's LinkedIn projects. Links only where the site still answers on its own domain. */
+/**
+ * Owner-stated and from the owner's LinkedIn projects. Links go to the ILLUMI case where there is one,
+ * otherwise to the site while it still answers on its own domain.
+ */
 export const clients: Client[] = [
-  { name: 'Aarhus Festuge', url: 'https://www.aarhusfestuge.dk' },
+  { name: 'Aarhus Festuge', url: 'https://www.illumi.dk/cases/aarhus-festuge/' },
+  { name: 'Aarhus Universitetsforlag' },
+  { name: 'ARoS', url: 'https://www.illumi.dk/cases/aros/' },
   { name: 'Cult' },
+  { name: 'DALI Speakers' },
   { name: 'Dansk Supermarked', projects: [{ name: 'Dansk Supermarked Group' }, { name: 'Føtex' }] },
   { name: 'Designa', projects: [{ name: 'Bricks' }] },
+  { name: 'DK-CAMP', url: 'https://www.illumi.dk/cases/dk-camp/' },
   { name: 'Faarup Sommerland', url: 'https://www.faarupsommerland.dk' },
   { name: 'Fibia', projects: [{ name: 'Platform upgrade' }, { name: 'Redesign' }] },
   { name: 'Habitura' },
   { name: 'Hjem-IS', projects: [{ name: 'Fang Hjem-IS bilen' }] },
   { name: 'Housing Denmark' },
-  { name: 'Landbrug & Fødevarer', url: 'https://lf.dk' },
+  { name: 'Innovationscenter for Økologisk Landbrug', url: 'https://www.illumi.dk/cases/innovationscenter-for-oekologisk-landbrug/' },
+  { name: 'Ishøj Kommune' },
+  { name: 'Kulturmødet Mors' },
+  { name: 'Landbrug & Fødevarer', url: 'https://www.illumi.dk/cases/landbrug-og-foedevarer/' },
   { name: 'Lightyears' },
   { name: 'Mejeriforeningen', projects: [{ name: 'Skolemælk', url: 'https://www.skolemaelk.dk' }] },
   {
@@ -35,13 +45,17 @@ export const clients: Client[] = [
       { name: 'Mit NRGi', url: 'https://mit.nrgi.dk' },
     ],
   },
+  { name: 'Normal' },
   { name: 'Ospra' },
   { name: 'Rationel', projects: [{ name: 'Website', url: 'https://www.rationel.dk' }, { name: 'Visit Report' }] },
   { name: 'Scandia Housing', projects: [{ name: 'Website' }, { name: 'CRM' }] },
   { name: 'Small Danish Hotels', projects: [{ name: 'Benefits' }, { name: 'Gavebeviser' }] },
   { name: 'Statens Serum Institut', url: 'https://www.ssi.dk' },
   { name: 'Sådan Bor Jeg' },
+  { name: 'Troldtekt' },
   { name: 'Unipress', url: 'https://unipress.dk' },
+  { name: 'Viking', url: 'https://www.illumi.dk/cases/viking-life-saving-equipment/' },
+  { name: 'Yara' },
 ];
 
 export interface Credit {

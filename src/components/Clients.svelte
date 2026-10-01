@@ -2,7 +2,7 @@
   import { buildCredits } from '../data/clients';
 
   const credits = buildCredits();
-  const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
+  const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 </script>
 
 <p class="cmd" aria-hidden="true">
@@ -12,7 +12,7 @@
 <ul class="credits">
   {#each credits as { name, url }, i (name)}
     <li>
-      {#if url}<a href={url} title={host(url)}>{name}</a>{:else}{name}{/if}{#if i < credits.length - 1}<span
+      {#if url}<a href={url} title={bare(url)}>{name}</a>{:else}{name}{/if}{#if i < credits.length - 1}<span
           class="sep"
           aria-hidden="true">{' /'}</span
         >{/if}
@@ -49,9 +49,9 @@
     letter-spacing: -0.02em;
   }
 
-  /* A name never breaks; lines break after a slash. */
+  /* Lines break after a slash: a flex item moves down whole, and only a name wider than the column wraps. */
   li {
-    white-space: nowrap;
+    min-width: 0;
   }
 
   .sep {

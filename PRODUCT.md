@@ -30,7 +30,7 @@ Read on laptops and phones, often after a LinkedIn message or a GitHub profile v
 ## Capabilities and Constraints
 
 - One page: short about text, skills, experience list, clients, contact links.
-- Clients: each role carries a `Kunder:` trailer (folded after three), and a credits list under the log names every client once, in log order. Clients and their named projects live in `src/data/clients.ts`; a site is linked only while it still answers on its own domain.
+- Clients: each role carries a `Kunder:` trailer (folded after three), and a credits list under the log names every client once, in log order. Clients and their named projects live in `src/data/clients.ts`. A client links to its ILLUMI case where there is one, otherwise to its site while that still answers on its own domain.
 - Shown: name, title, city, email, GitHub, LinkedIn. Not shown: phone number, photo.
 - Experience lists jobs plus education (Tech College Aalborg), which runs as its own `uddannelse` branch. The log's root is an `Initial commit` on the owner's birth date.
 - Must be fully readable without JavaScript; motion must respect reduced-motion.
@@ -68,7 +68,7 @@ Contact: mail@danieltoft.dk · https://github.com/DanielToft · https://dk.linke
 
 Clients (owner-stated 2026-10-01, plus the owner's LinkedIn projects export):
 
-- ILLUMI: Aarhus Festuge, Statens Serum Institut, Landbrug & Fødevarer (many sites, shown as the company), NRGi (new nrgi.dk and mit.nrgi.dk), Mejeriforeningen (skolemaelk.dk, 2017–2018), Unipress (2016–2017), Habitura, Ospra
+- ILLUMI: Aarhus Festuge, ARoS, Statens Serum Institut, Landbrug & Fødevarer (many sites, shown as the company), NRGi (new nrgi.dk and mit.nrgi.dk), Viking (Life-Saving Equipment), Yara, DALI Speakers, Normal, Troldtekt, DK-CAMP, Innovationscenter for Økologisk Landbrug, Mejeriforeningen (skolemaelk.dk, 2017–2018), Aarhus Universitetsforlag, Ishøj Kommune, Kulturmødet Mors, Unipress (2016–2017), Habitura, Ospra. ILLUMI case pages exist for Aarhus Festuge, ARoS, Viking, DK-CAMP, Landbrug & Fødevarer and Innovationscenter for Økologisk Landbrug.
 - NöRD: Aarhus Festuge (2014–2016), NRGi (the earlier web platform), Dansk Supermarked (incl. an internal Føtex app), Faarup Sommerland, Rationel (website and the Visit Report iPad app), Fibia (redesign, platform upgrade), Small Danish Hotels (Benefits; Gavebeviser has no company on LinkedIn), Lightyears, Designa (Bricks kitchen visualizer), Hjem-IS (campaign), Cult, Sådan Bor Jeg
 - Brinth & Hillerup: Scandia Housing (website and CRM)
 - SystemaWeb: Housing Denmark. LinkedIn dates it aug 2013, after the role's jan 2013 end; unresolved.
