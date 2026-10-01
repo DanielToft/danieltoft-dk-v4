@@ -24,7 +24,7 @@ export interface Role {
 export const roles: Role[] = [
   {
     company: 'ILLUMI A/S',
-    title: 'System Architect',
+    title: 'Software Architect',
     start: '2016-06',
     end: null,
     url: 'https://www.illumi.dk',

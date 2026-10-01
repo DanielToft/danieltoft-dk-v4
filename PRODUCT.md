@@ -21,7 +21,7 @@ A personal one-pager for Daniel Toft that works as a digital business card: who 
 
 ## Positioning
 
-Daniel's own career, told truthfully: a continuous line from 2008 apprentice at Bang & Olufsen to System Architect at ILLUMI, including years where he ran his own company (SystemaWeb) in parallel with employment. The site shows less than the old one on purpose.
+Daniel's own career, told truthfully: a continuous line from 2008 apprentice at Bang & Olufsen to Software Architect at ILLUMI, including years where he ran his own company (SystemaWeb) in parallel with employment. The site shows less than the old one on purpose.
 
 ## Operating Context
 
@@ -45,7 +45,7 @@ Read on laptops and phones, often after a LinkedIn message or a GitHub profile v
 
 Work history from the current danieltoft.dk (all dates as stated there):
 
-- ILLUMI A/S: System Architect, Jun 2016 to present, illumi.dk (no description exists; do not invent one)
+- ILLUMI A/S: Software Architect, Jun 2016 to present, illumi.dk (no description exists; do not invent one)
 - NöRD A/S: System Developer, Apr 2013 to Jun 2016. Backend on .NET/ASP.NET MVC and Umbraco, plus frontend JavaScript
 - Brinth & Hillerup A/S: Lead Developer, Sep 2012 to Apr 2013. ASP.NET and Umbraco; built Scandia Housing's website and business systems
 - SystemaWeb: Owner & Developer, Jun 2009 to Jan 2013. Own company; IT support turned web/software development, Umbraco and Drupal, freelance
