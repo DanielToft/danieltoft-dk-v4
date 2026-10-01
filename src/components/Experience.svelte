@@ -470,13 +470,25 @@
   /* Scroll-bound drawing: state is a pure function of scroll position. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
+      /*
+        One drawing head for the whole graph, --draw-at above the viewport bottom. Each piece is
+        drawn while the head crosses it, measured in px from the row's top edge (entry-crossing).
+        Percentages of `cover` scale with viewport + row height, so on tall screens a row's lanes
+        lagged behind the next row's and left gaps.
+      */
+      .log {
+        --draw-at: 10vh;
+      }
+
       .lane {
         animation: draw-y linear both;
       }
 
       .node {
         animation: pop linear both;
-        animation-range: cover 6% cover 12%;
+        animation-range:
+          entry-crossing calc(var(--draw-at) + var(--node-y) - var(--node) / 2)
+          entry-crossing calc(var(--draw-at) + var(--node-y) + var(--node) * 1.5);
       }
 
       /* Curves are revealed top-down: a dash trick breaks on non-uniformly scaled, non-scaling strokes. */
@@ -494,25 +506,29 @@
         animation-timeline: --row;
       }
 
-      .lane.top {
-        animation-range: cover 0% cover 14%;
+      .lane.top,
+      .curve.in {
+        animation-range: entry-crossing var(--draw-at) entry-crossing calc(var(--draw-at) + var(--node-y));
       }
 
-      .lane.bottom,
-      .lane.after-out {
-        animation-range: cover 10% cover 26%;
+      .lane.bottom {
+        animation-range: entry-crossing calc(var(--draw-at) + var(--node-y)) entry-crossing calc(var(--draw-at) + 100%);
       }
 
       .lane.through {
-        animation-range: cover 0% cover 26%;
-      }
-
-      .curve.in {
-        animation-range: cover 0% cover 12%;
+        animation-range: entry-crossing var(--draw-at) entry-crossing calc(var(--draw-at) + 100%);
       }
 
       .curve.out {
-        animation-range: cover 10% cover 18%;
+        animation-range:
+          entry-crossing calc(var(--draw-at) + var(--node-y))
+          entry-crossing calc(var(--draw-at) + var(--node-y) + var(--curve-h));
+      }
+
+      .lane.after-out {
+        animation-range:
+          entry-crossing calc(var(--draw-at) + var(--node-y) + var(--curve-h))
+          entry-crossing calc(var(--draw-at) + 100%);
       }
     }
   }
