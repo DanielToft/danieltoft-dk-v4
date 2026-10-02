@@ -121,11 +121,11 @@ const commits: Commit[] = log
               <kbd title="Tryk e">e</kbd>
             </li>
             <li>
-              <a href={profile.github.url}>GitHub</a>
+              <a href={profile.github.url}>GitHub<span class="print-url">{bare(profile.github.url)}</span></a>
               <kbd title="Tryk g">g</kbd>
             </li>
             <li>
-              <a href={profile.linkedin.url}>LinkedIn</a>
+              <a href={profile.linkedin.url}>LinkedIn<span class="print-url">{bare(profile.linkedin.url)}</span></a>
               <kbd title="Tryk l">l</kbd>
             </li>
           </ul>
@@ -581,6 +581,83 @@ const commits: Commit[] = log
 
     .raction {
       justify-self: end;
+    }
+  }
+
+  /* On paper a link is its address: GitHub and LinkedIn print where they go. */
+  .print-url {
+    display: none;
+  }
+
+  /*
+    Print: a CV on A4. The name at a third of the width, bio beside the facts, contact as addresses. The footer
+    repeats the hero's contact and is all buttons and shortcuts, so it stays on screen.
+  */
+  @media print {
+    .hero {
+      padding-top: 0;
+    }
+
+    .mark {
+      width: 22rem;
+    }
+
+    .intro {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-6);
+      margin-top: var(--space-5);
+    }
+
+    .lead {
+      font-size: var(--step-2);
+    }
+
+    .bio {
+      max-width: none;
+      margin-top: var(--space-3);
+    }
+
+    .links {
+      gap: 0;
+      margin-top: var(--space-4);
+    }
+
+    .links li {
+      padding-block: var(--space-1);
+      border: 0;
+    }
+
+    .links a {
+      font-weight: 500;
+    }
+
+    .links a[href^='http'] {
+      font-size: 0;
+    }
+
+    .print-url {
+      display: inline;
+      font-size: var(--step-0);
+    }
+
+    .links kbd {
+      display: none;
+    }
+
+    .skills,
+    .experience,
+    .clients {
+      padding-top: var(--space-6);
+    }
+
+    .skills h2,
+    .experience h2,
+    .clients h2 {
+      font-size: 16pt;
+    }
+
+    .contact {
+      display: none;
     }
   }
 </style>

@@ -190,4 +190,26 @@
       font-size: var(--step-0);
     }
   }
+
+  /* Print: a plain list, name and years, in two columns. No command, no diffstat bars. */
+  @media print {
+    .cmd,
+    .sep,
+    .bar {
+      display: none;
+    }
+
+    .stat {
+      width: auto;
+      margin-top: var(--space-4);
+      columns: 2;
+      column-gap: var(--space-8);
+    }
+
+    .line {
+      grid-template-columns: var(--name-w) var(--num-w);
+      min-height: 0;
+      line-height: 1.7;
+    }
+  }
 </style>

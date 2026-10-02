@@ -65,4 +65,17 @@
     color: var(--ink-muted);
     font-weight: 400;
   }
+
+  /* Print: the names without the command over them. */
+  @media print {
+    .cmd {
+      display: none;
+    }
+
+    .credits {
+      max-width: none;
+      margin-top: var(--space-4);
+      font-size: var(--step-0);
+    }
+  }
 </style>

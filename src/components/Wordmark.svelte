@@ -140,4 +140,15 @@
   .wordmark:global(.decoding) .text {
     color: transparent;
   }
+
+  /* Printed mid-decode, the name would come out as hex: always print the name. */
+  @media print {
+    .layer {
+      display: none;
+    }
+
+    .wordmark:global(.decoding) .text {
+      color: inherit;
+    }
+  }
 </style>

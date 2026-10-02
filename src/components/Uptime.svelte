@@ -62,4 +62,11 @@
   .clock {
     color: var(--ink-muted);
   }
+
+  /* A clock on paper is wrong a second later. */
+  @media print {
+    .clock {
+      display: none;
+    }
+  }
 </style>

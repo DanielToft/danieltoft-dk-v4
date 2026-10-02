@@ -468,4 +468,10 @@
       letter-spacing: -0.04em;
     }
   }
+
+  @media print {
+    .bar {
+      display: none;
+    }
+  }
 </style>

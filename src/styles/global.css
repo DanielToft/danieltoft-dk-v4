@@ -154,3 +154,60 @@ html[data-detached] body {
     transition: none !important;
   }
 }
+
+/*
+  Print: the page as a CV on A4. White paper, a smaller type scale in points, and nothing that only works on
+  a screen. Components keep their own print rules; their wide layouts also apply to print (`, print` on the
+  media query), as A4 is narrower than the 48rem they wait for.
+*/
+@page {
+  size: A4;
+  margin: 14mm 15mm;
+}
+
+@media print {
+  :root {
+    --mint: #fff;
+    --step--1: 8pt;
+    --step-0: 9.5pt;
+    --step-1: 12pt;
+    --step-2: 15pt;
+    --gutter: 0px;
+  }
+
+  html {
+    font-size: 75%;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  html[data-detached] body {
+    padding-bottom: 0;
+  }
+
+  /* Links are the text they say; on paper an underline promises nothing. */
+  a {
+    text-decoration: none;
+  }
+
+  .skip {
+    display: none;
+  }
+
+  /* Folded `Kunder:` trailers print in full. */
+  [data-rest][hidden] {
+    display: inline !important;
+  }
+
+  [data-more] {
+    display: none !important;
+  }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}

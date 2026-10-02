@@ -40,6 +40,7 @@
       class="row"
       class:head={row.head}
       class:merge={row.kind === 'merge'}
+      class:root={row.kind === 'root'}
       class:on-branch={row.lane > 0}
       data-tech={row.role?.tech?.map(techName).join('|')}
       data-hash={row.hash}
@@ -532,7 +533,7 @@
     font-size: var(--step--1);
   }
 
-  @media (min-width: 48rem) {
+  @media (min-width: 48rem), print {
     .log {
       --x0: 1rem;
       --lane-gap: 1.5rem;
@@ -597,7 +598,7 @@
 
   /* Scroll-bound drawing: state is a pure function of scroll position. */
   @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
+    @media screen and (prefers-reduced-motion: no-preference) {
       /*
         One drawing head for the whole graph, --draw-at above the viewport bottom. Each piece is
         drawn while the head crosses it, measured in px from the row's top edge (entry-crossing).
@@ -677,6 +678,70 @@
     }
     to {
       clip-path: inset(calc(var(--stroke) * -1));
+    }
+  }
+
+  /*
+    Print: a plain CV, no git. The graph, hashes, refs and command go, and with them the rows that were only
+    git: the merges and the initial commit. HEAD gives up its inverted band.
+  */
+  @media print {
+    .log {
+      --pad: 0.7rem;
+      margin-top: var(--space-2);
+    }
+
+    .trailer {
+      line-height: 1.35rem;
+    }
+
+    .row {
+      grid-template-columns: minmax(0, 1fr) 11rem;
+      grid-template-areas: 'msg when';
+      break-inside: avoid;
+    }
+
+    .row + .row::before {
+      left: 0;
+    }
+
+    .cmd,
+    .g,
+    .hash,
+    .ref,
+    .merge,
+    .root {
+      display: none;
+    }
+
+    .head {
+      --lane-ink: var(--ink);
+      margin-inline: 0;
+      padding-inline: 0;
+      background: none;
+    }
+
+    .head .company,
+    .head .title,
+    .head .when {
+      color: var(--ink);
+    }
+
+    .head .summary {
+      color: var(--ink-body);
+    }
+
+    .head .dur,
+    .head .trailer {
+      color: var(--ink-muted);
+    }
+
+    .row.head + .row::before {
+      display: block;
+    }
+
+    .end {
+      display: none;
     }
   }
 
