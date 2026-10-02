@@ -233,8 +233,11 @@
     line-height: 1.5rem;
   }
 
-  /* Checkout-able: reads like the diffstat's names, a Sage underline at rest. */
-  button.hash {
+  /*
+    Checkout-able: reads like the diffstat's names, a Sage underline at rest. `:where()` keeps the reset at
+    `.hash` weight, so the layout's own `.hash` padding (the row's top pad on wide screens) still wins.
+  */
+  :where(button).hash {
     justify-self: start;
     align-self: start;
     padding: 0;
