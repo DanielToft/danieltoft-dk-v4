@@ -117,6 +117,12 @@ export const buildLog = (list: Role[] = [...roles, ...education], born: YearMont
   });
 };
 
+/** `git blame`: the role commit a line written in month `at` sits on. The newest on main from then, else any. */
+export const blameAt = (at: YearMonth, rows: LogRow[] = buildLog()): LogRow => {
+  const done = rows.filter((r) => r.role && toMonths(r.role.start) <= toMonths(at));
+  return done.find((r) => r.lane === 0) ?? done[0] ?? rows[rows.length - 1];
+};
+
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** "3 år 2 mdr", "7 mdr". Empty when a bare year leaves the length unknown. */

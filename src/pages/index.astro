@@ -10,7 +10,7 @@ import Shortcuts from '../components/Shortcuts.svelte';
 import Checkout from '../components/Checkout.svelte';
 import { profile } from '../data/profile';
 import { roles, formatYM, toMonths } from '../data/experience';
-import { buildLog } from '../data/log';
+import { blameAt, buildLog } from '../data/log';
 import { buildStats } from '../data/skills';
 import type { Commit } from '../scripts/checkout';
 
@@ -21,6 +21,23 @@ const year = new Date(builtAt).getFullYear();
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
 const log = buildLog();
 const root = log.find((r) => r.kind === 'root')!.hash;
+
+// about.md under `git blame`: each line on the role it dates from, numbered through the file. Like a blame
+// hunk, the hash and date print only where the commit changes, and every paragraph opens a new hunk.
+// `age` (0 oldest, 1 newest) tints the bar.
+const oldest = toMonths(first.start);
+const newest = new Date(builtAt).getFullYear() * 12 + new Date(builtAt).getMonth();
+let lineNo = 0;
+const about = profile.about.map((paragraph) => {
+  let previous = '';
+  return paragraph.map(({ text, since }) => {
+    const row = blameAt(since, log);
+    const at = toMonths(row.date);
+    const same = row.hash === previous;
+    previous = row.hash;
+    return { text, n: ++lineNo, hash: row.hash, date: formatYM(row.date), at, same, age: (at - oldest) / (newest - oldest) };
+  });
+});
 const commits: Commit[] = log
   .filter((r) => r.kind !== 'root')
   .map((r) => ({
@@ -50,9 +67,40 @@ const commits: Commit[] = log
       </div>
 
       <div class="intro">
-        <div class="about">
+        <div class="about" data-about>
+          <p class="cmd">
+            <span aria-hidden="true"><span class="prompt">$</span> <span data-blame-cmd>cat</span> about.md</span>
+            <button type="button" class="blame" data-blame-toggle aria-pressed="false" hidden>git blame</button>
+          </p>
           <p class="lead">{profile.lead}</p>
-          {profile.about.map((text) => <p class="bio">{text}</p>)}
+          {
+            about.map((lines) => (
+              <p class="bio">
+                {lines.map((line, i) => (
+                  <Fragment>
+                    {i > 0 && ' '}
+                    <span class="bl" data-blame-at={line.at} style={`--age: ${line.age.toFixed(2)}`}>
+                      {!line.same && (
+                        <Fragment>
+                          <button
+                            type="button"
+                            class="gh"
+                            data-checkout={line.hash}
+                            aria-label={`git checkout ${line.hash}: se siden som i ${line.date}`}
+                          >
+                            {line.hash}
+                          </button>
+                          <span class="gd">{line.date}</span>
+                        </Fragment>
+                      )}
+                      <span class="gn" aria-hidden="true">{line.n}</span>
+                      <span class="txt">{line.text}</span>
+                    </span>
+                  </Fragment>
+                ))}
+              </p>
+            ))
+          }
         </div>
 
         <div class="side">
@@ -127,6 +175,7 @@ const commits: Commit[] = log
       <span>© {year} {profile.name}</span>
       <span class="keys">Genveje <kbd>e</kbd> <kbd>g</kbd> <kbd>l</kbd></span>
       <span class="keys">Tidsrejse <kbd>j</kbd> <kbd>k</kbd></span>
+      <span class="keys">Blame <kbd>b</kbd></span>
     </p>
   </footer>
 
@@ -139,6 +188,17 @@ const commits: Commit[] = log
     for (const el of document.querySelectorAll<HTMLElement>('[data-since]')) {
       el.textContent = duration(el.dataset.since as YearMonth, ym);
     }
+
+    // `git blame about.md`: the toggle, and the command above the bio, exist only with JS. Without it: `cat`.
+    const about = document.querySelector<HTMLElement>('[data-about]')!;
+    const blame = about.querySelector<HTMLButtonElement>('[data-blame-toggle]')!;
+    const blameCmd = about.querySelector('[data-blame-cmd]')!;
+    blame.hidden = false;
+    blame.addEventListener('click', () => {
+      const on = about.toggleAttribute('data-blaming');
+      blame.setAttribute('aria-pressed', String(on));
+      blameCmd.textContent = on ? 'git blame' : 'cat';
+    });
 
     // Long `Kunder:` trailers fold behind "+N flere"; without JS they print in full.
     for (const more of document.querySelectorAll<HTMLElement>('[data-fold] [data-more]')) {
@@ -186,6 +246,140 @@ const commits: Commit[] = log
   .bio {
     max-width: 40rem;
     margin-top: var(--space-4);
+    font-size: var(--step-0);
+  }
+
+  /* ---- about.md: `cat` by default, `git blame` from the toggle (JS only) ---- */
+  /* On the baseline of the first fact beside it: both columns open with a line of mono. */
+  .about .cmd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-3);
+    margin-block: 0 var(--space-3);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-ligatures: none;
+  }
+
+  .about .prompt {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* A toggle chip, like the log's ref pills; pressed, it takes the Ink fill. Low enough to stay in the line. */
+  .blame {
+    height: 1.25rem;
+    padding: 0 0.6em;
+    border: 1px solid var(--sage);
+    border-radius: var(--radius);
+    background: var(--paper);
+    color: var(--ink);
+    font: 600 0.8rem / 1 var(--font-mono);
+    cursor: pointer;
+    transition:
+      background-color 160ms var(--ease-out),
+      border-color 160ms var(--ease-out),
+      color 160ms var(--ease-out);
+  }
+
+  .blame:hover {
+    border-color: var(--ink);
+  }
+
+  .blame[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--mint);
+  }
+
+  /* Each line runs inline in its paragraph; the gutter only exists under blame. */
+  .bl {
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  /* `git checkout`: lines written after the checked-out month fade, like the log's future rows. */
+  .bl[data-future] {
+    opacity: 0.22;
+  }
+
+  .gh,
+  .gd,
+  .gn {
+    display: none;
+  }
+
+  [data-blaming] .bio {
+    max-width: none;
+    margin-top: var(--space-3);
+  }
+
+  [data-blaming] .bio + .bio {
+    margin-top: var(--space-5);
+  }
+
+  /*
+    One grid per line, so a faded line fades whole. Sized in the gutter's mono `ch`; the text sets its own
+    font back. Phones: hash and date over the line, no numbers.
+  */
+  [data-blaming] .bl {
+    position: relative;
+    display: grid;
+    grid-template-columns: 7ch auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0 var(--space-3);
+    padding: var(--space-1) 0 var(--space-1) var(--space-4);
+    border-top: 1px solid var(--sage-soft);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-ligatures: none;
+  }
+
+  [data-blaming] .bio .bl:last-child {
+    border-bottom: 1px solid var(--sage-soft);
+  }
+
+  /* Blame's age bar: Ink for the newest lines, Sage for the oldest. */
+  [data-blaming] .bl::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: color-mix(in srgb, var(--ink) calc(var(--age) * 100%), var(--sage-soft));
+  }
+
+  [data-blaming] .gh,
+  [data-blaming] .gd {
+    display: block;
+    color: var(--ink-muted);
+  }
+
+  [data-blaming] .gh {
+    grid-column: 1;
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline 2px var(--sage);
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 160ms var(--ease-out);
+  }
+
+  [data-blaming] .gh:hover {
+    text-decoration-color: currentColor;
+  }
+
+  [data-blaming] .gd {
+    grid-column: 2;
+  }
+
+  [data-blaming] .txt {
+    grid-column: 1 / -1;
+    color: var(--ink-body);
+    font-family: var(--font-sans);
     font-size: var(--step-0);
   }
 
@@ -355,6 +549,22 @@ const commits: Commit[] = log
   }
 
   @media (min-width: 48rem) {
+    /* Wide enough for GitHub's layout: hash, date and line number to the left of the line. */
+    [data-blaming] .bl {
+      grid-template-columns: 7ch 8ch 2ch minmax(0, 1fr);
+    }
+
+    [data-blaming] .gn {
+      display: block;
+      grid-column: 3;
+      color: var(--sage);
+      text-align: right;
+    }
+
+    [data-blaming] .txt {
+      grid-column: 4;
+    }
+
     .remotes li {
       grid-template-columns: 9ch minmax(0, 1fr) auto;
       padding-block: var(--space-5);

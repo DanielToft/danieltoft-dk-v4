@@ -94,6 +94,10 @@
       }
     }
 
+    for (const line of document.querySelectorAll<HTMLElement>('[data-blame-at]')) {
+      line.toggleAttribute('data-future', Number(line.dataset.blameAt) > at);
+    }
+
     for (const li of document.querySelectorAll<HTMLElement>('[data-credits] > li')) {
       li.toggleAttribute('data-future', Number(li.dataset.at) > at);
     }
@@ -153,6 +157,7 @@
     }
     for (const hint of document.querySelectorAll<HTMLElement>('[data-checkout-hint]')) hint.hidden = false;
 
+    // On the document, not the log: the bio's blame gutter checks out too.
     const onClick = (event: MouseEvent) => {
       const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-checkout]');
       if (!button) return;
@@ -161,7 +166,7 @@
       if (current?.ref === button.dataset.checkout) toMain();
       else toCommit(byHash(button.dataset.checkout!), false);
     };
-    log?.addEventListener('click', onClick);
+    document.addEventListener('click', onClick);
 
     const off = onCheckout((next) => {
       current = next;
@@ -169,7 +174,7 @@
     });
 
     return () => {
-      log?.removeEventListener('click', onClick);
+      document.removeEventListener('click', onClick);
       off();
     };
   });

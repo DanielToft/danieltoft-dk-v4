@@ -8,6 +8,11 @@
       e: () => (location.href = `mailto:${email}`),
       g: () => window.open(github, '_blank', 'noopener'),
       l: () => window.open(linkedin, '_blank', 'noopener'),
+      b: () => {
+        document.querySelector<HTMLButtonElement>('[data-blame-toggle]:not([hidden])')?.click();
+        const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+        document.querySelector('[data-about]')?.scrollIntoView({ block: 'nearest', behavior });
+      },
     };
 
     const onKey = (event: KeyboardEvent) => {
@@ -24,7 +29,7 @@
     addEventListener('keydown', onKey);
 
     console.log(
-      '%c$ git log --author="Daniel Toft"%c\nHej udvikler. Kig gerne i kilden: https://github.com/DanielToft\nGenveje: e = email, g = GitHub, l = LinkedIn\nTidsrejse: j/k går gennem loggen, Esc = git switch main',
+      '%c$ git log --author="Daniel Toft"%c\nHej udvikler. Kig gerne i kilden: https://github.com/DanielToft\nGenveje: e = email, g = GitHub, l = LinkedIn\nTidsrejse: j/k går gennem loggen, Esc = git switch main\nBlame: b viser, hvornår hver linje i bio\'en blev skrevet',
       'color:#214b3c;background:#d5f4e5;font:600 13px "Cascadia Code",monospace;padding:4px 8px;border-radius:4px',
       'color:inherit;font:12px monospace',
     );
