@@ -12,7 +12,7 @@ export interface Commit {
   /** What git prints after the hash: the company, or the merge message. */
   subject: string;
   /** The role the commit starts, with its run as `toMonths` counts. `end` is `null` while it runs. */
-  role?: { label: string; start: number; end: number | null };
+  role?: { title: string; company: string; start: number; end: number | null };
 }
 
 export interface Checkout {

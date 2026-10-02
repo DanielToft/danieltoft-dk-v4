@@ -62,9 +62,9 @@
 
   const roleAt = (next: Checkout) => {
     const own = byHash(next.hash).role;
-    if (own) return own.label;
+    if (own) return own;
     const running = commits.filter((c) => c.role && c.role.start <= next.at && (c.role.end ?? Infinity) > next.at);
-    return (running.find((c) => c.lane === 0) ?? running[0])?.role?.label ?? '–';
+    return (running.find((c) => c.lane === 0) ?? running[0])?.role;
   };
 
   const apply = (next: Checkout | null) => {
@@ -98,7 +98,9 @@
       li.toggleAttribute('data-future', Number(li.dataset.at) > at);
     }
 
-    swap(document.querySelector('[data-fact-role]'), next ? roleAt(next) : null);
+    const role = next && roleAt(next);
+    swap(document.querySelector('[data-fact-role]'), next ? (role?.title ?? '–') : null);
+    swap(document.querySelector('[data-fact-company]'), next ? (role?.company ?? '–') : null);
   };
 
   let headRef: HTMLElement | undefined;

@@ -29,7 +29,8 @@ const commits: Commit[] = log
     lane: r.lane,
     subject: r.role?.company ?? `Merge branch '${r.merged}'`,
     role: r.role && {
-      label: `${r.role.title}, ${r.role.company}`,
+      title: r.role.title,
+      company: r.role.company,
       start: toMonths(r.role.start),
       end: r.role.end ? toMonths(r.role.end) : null,
     },
@@ -56,7 +57,8 @@ const commits: Commit[] = log
 
         <div class="side">
           <dl class="facts">
-            <div><dt>rolle</dt><dd data-fact-role>{current.title}, {current.company}</dd></div>
+            <div><dt>rolle</dt><dd data-fact-role>{current.title}</dd></div>
+            <div><dt>firma</dt><dd data-fact-company>{current.company}</dd></div>
             <div><dt>sted</dt><dd>{profile.city}</dd></div>
             <div><dt>siden</dt><dd>{formatYM(first.start)}</dd></div>
             <div>
@@ -204,8 +206,10 @@ const commits: Commit[] = log
     color: var(--ink-muted);
   }
 
+  /* The title only wraps on the narrowest phones; it then breaks in even halves, not on its last word. */
   .facts dd {
     color: var(--ink);
+    text-wrap: balance;
   }
 
   .links {
@@ -338,13 +342,19 @@ const commits: Commit[] = log
     }
   }
 
-  @media (min-width: 48rem) {
+  /*
+    Two columns only once the side one can hold the longest fact on one line: the title in `rolle` is
+    ~36ch of mono, so 23rem with the `dt` column. Below that, the facts get the full width.
+  */
+  @media (min-width: 60rem) {
     .intro {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      grid-template-columns: minmax(0, 7fr) minmax(23rem, 4fr);
       gap: var(--space-8);
       align-items: start;
     }
+  }
 
+  @media (min-width: 48rem) {
     .remotes li {
       grid-template-columns: 9ch minmax(0, 1fr) auto;
       padding-block: var(--space-5);
