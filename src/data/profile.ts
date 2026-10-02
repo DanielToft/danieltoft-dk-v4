@@ -1,6 +1,6 @@
 export const profile = {
   name: 'Daniel Toft',
-  title: 'Softwarearkitekt & udvikler',
+  title: 'Software, Cloud & Platform Architect',
   city: 'Aarhus',
   /** The root of the log: `Initial commit`. */
   born: '1989-08-20',
