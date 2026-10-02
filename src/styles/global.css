@@ -160,9 +160,14 @@ html[data-detached] body {
   a screen. Components keep their own print rules; their wide layouts also apply to print (`, print` on the
   media query), as A4 is narrower than the 48rem they wait for.
 */
+/*
+  No page margin: the browser prints its header and footer (date, title, URL) only where the margin has room
+  for them, and CSS has no other way to turn them off. The margin is the body's padding instead, cloned onto
+  every page it breaks across.
+*/
 @page {
   size: A4;
-  margin: 14mm 15mm;
+  margin: 0;
 }
 
 @media print {
@@ -182,6 +187,11 @@ html[data-detached] body {
   html,
   body {
     background: #fff;
+  }
+
+  body {
+    padding: 14mm 15mm;
+    box-decoration-break: clone;
   }
 
   html[data-detached] body {
