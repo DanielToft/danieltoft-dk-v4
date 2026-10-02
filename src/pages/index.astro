@@ -138,8 +138,8 @@ const commits: Commit[] = log
             <div><dt>rolle</dt><dd data-fact-role>{current.title}</dd></div>
             <div><dt>firma</dt><dd data-fact-company>{current.company}</dd></div>
             <div><dt>sted</dt><dd>{profile.city}</dd></div>
-            <div><dt>siden</dt><dd>{formatYM(first.start)}</dd></div>
-            <div>
+            <div class="since"><dt>siden</dt><dd>{formatYM(first.start)}</dd></div>
+            <div class="uptime">
               <dt>oppetid</dt>
               <dd><Uptime client:idle since={`${first.start}-01`} builtAt={builtAt} /></dd>
             </div>
@@ -741,7 +741,11 @@ const commits: Commit[] = log
       font-size: var(--step-0);
     }
 
-    .links kbd {
+    /* `siden` and the running `oppetid` stay on screen; on paper the experience below dates it all. */
+    /* `.facts` before them to outweigh `.facts div`. */
+    .links kbd,
+    .facts .since,
+    .facts .uptime {
       display: none;
     }
 
