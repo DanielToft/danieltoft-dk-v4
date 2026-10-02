@@ -5,7 +5,7 @@
   /** `root` is the log's initial commit; `builtAt` is the build timestamp so SSR and hydration agree. */
   let { stats, root, builtAt }: { stats: SkillStat[]; root: string; builtAt: number } = $props();
 
-  type Line = { name: string; n: string; bar: string };
+  type Line = { name: string; from: string[]; n: string; bar: string };
 
   let ready = $state(false);
   let grep = $state<string | null>(null);
@@ -18,23 +18,23 @@
     return stats.map((stat) => {
       const months = monthsOf(stat, now);
       const years = Math.floor(months / 12);
-      return { name: stat.name, n: years ? `${years} år` : `${months} mdr`, bar: '+'.repeat(Math.max(1, years)) };
+      return { name: stat.name, from: stat.from, n: years ? `${years} år` : `${months} mdr`, bar: '+'.repeat(Math.max(1, years)) };
     });
   });
   const nameW = $derived(Math.max(...lines.map((l) => l.name.length)));
   const numW = $derived(Math.max(...lines.map((l) => l.n.length)));
 
   // `git log --grep` over the static log: rows without the skill fade, the graph stays whole.
-  const toggle = (name: string) => {
+  const toggle = ({ name, from }: Line) => {
     grep = grep === name ? null : name;
     let hits = 0;
     for (const row of document.querySelectorAll<HTMLElement>('[data-log] > li')) {
-      const hit = !grep || !!row.dataset.tech?.split('|').includes(grep);
+      const hit = !grep || !!row.dataset.tech?.split('|').some((t) => from.includes(t));
       if (grep && hit) hits++;
       row.toggleAttribute('data-miss', !hit);
     }
     const arg = document.querySelector('[data-grep-arg]');
-    if (arg) arg.textContent = grep ? ` --grep="${grep}"` : '';
+    if (arg) arg.textContent = grep ? from.map((t) => ` --grep="${t}"`).join('') : '';
     status = grep ? `Erfaringen viser ${hits} ${hits === 1 ? 'post' : 'poster'} med ${grep}.` : 'Filteret er fjernet.';
   };
 </script>
@@ -63,7 +63,7 @@
           class="line"
           class:on={grep === line.name}
           aria-pressed={grep === line.name}
-          onclick={() => toggle(line.name)}
+          onclick={() => toggle(line)}
         >
           {@render cells(line)}
         </button>
