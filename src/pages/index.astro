@@ -101,7 +101,12 @@ const commits: Commit[] = log
                       {!line.same && (
                         <Fragment>
                           {line.url ? (
-                            <a class="gh" href={line.url} aria-label={`Commit ${line.hash} på GitHub: performancetesten`}>
+                            <a
+                              class="gh"
+                              href={line.url}
+                              title="Performancetesten: Lighthouse kører ved hvert deploy og stopper det, hvis en score falder under 90"
+                              aria-label={`Commit ${line.hash} på GitHub: performancetesten`}
+                            >
                               {line.hash}
                             </a>
                           ) : (
@@ -257,11 +262,10 @@ const commits: Commit[] = log
           el('span', ' · ', 'note'),
           link('/lighthouse.html', 'se rapporten'),
         );
+        proof.hidden = false;
       } catch {
-        // Not deployed (the dev server has no run): say where the scores come from instead.
-        proof.replaceChildren(el('span', 'Lighthouse kører ved hvert deploy; scorerne står her på den live side.', 'note'));
+        // No run to show (the dev server has none): the line stands alone, and the hash's title says why.
       }
-      proof.hidden = false;
     };
 
     blame.addEventListener('click', () => {
