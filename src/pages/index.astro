@@ -310,77 +310,86 @@ const commits: Commit[] = log
     display: none;
   }
 
-  [data-blaming] .bio {
-    max-width: none;
-    margin-top: var(--space-3);
+  /* Blame is a screen view: printed, about.md is just the bio, without its command. */
+  @media print {
+    .about .cmd {
+      display: none;
+    }
   }
 
-  [data-blaming] .bio + .bio {
-    margin-top: var(--space-5);
-  }
+  @media screen {
+    [data-blaming] .bio {
+      max-width: none;
+      margin-top: var(--space-3);
+    }
 
-  /*
-    One grid per line, so a faded line fades whole. Sized in the gutter's mono `ch`; the text sets its own
-    font back. Phones: hash and date over the line, no numbers.
-  */
-  [data-blaming] .bl {
-    position: relative;
-    display: grid;
-    grid-template-columns: 7ch auto minmax(0, 1fr);
-    align-items: baseline;
-    gap: 0 var(--space-3);
-    padding: var(--space-1) 0 var(--space-1) var(--space-4);
-    border-top: 1px solid var(--sage-soft);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    font-variant-ligatures: none;
-  }
+    [data-blaming] .bio + .bio {
+      margin-top: var(--space-5);
+    }
 
-  [data-blaming] .bio .bl:last-child {
-    border-bottom: 1px solid var(--sage-soft);
-  }
+    /*
+      One grid per line, so a faded line fades whole. Sized in the gutter's mono `ch`; the text sets its own
+      font back. Phones: hash and date over the line, no numbers.
+    */
+    [data-blaming] .bl {
+      position: relative;
+      display: grid;
+      grid-template-columns: 7ch auto minmax(0, 1fr);
+      align-items: baseline;
+      gap: 0 var(--space-3);
+      padding: var(--space-1) 0 var(--space-1) var(--space-4);
+      border-top: 1px solid var(--sage-soft);
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      font-variant-ligatures: none;
+    }
 
-  /* Blame's age bar: Ink for the newest lines, Sage for the oldest. */
-  [data-blaming] .bl::before {
-    content: '';
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 3px;
-    background: color-mix(in srgb, var(--ink) calc(var(--age) * 100%), var(--sage-soft));
-  }
+    [data-blaming] .bio .bl:last-child {
+      border-bottom: 1px solid var(--sage-soft);
+    }
 
-  [data-blaming] .gh,
-  [data-blaming] .gd {
-    display: block;
-    color: var(--ink-muted);
-  }
+    /* Blame's age bar: Ink for the newest lines, Sage for the oldest. */
+    [data-blaming] .bl::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: color-mix(in srgb, var(--ink) calc(var(--age) * 100%), var(--sage-soft));
+    }
 
-  [data-blaming] .gh {
-    grid-column: 1;
-    justify-self: start;
-    padding: 0;
-    border: 0;
-    background: none;
-    font: inherit;
-    cursor: pointer;
-    text-decoration: underline 2px var(--sage);
-    text-underline-offset: 0.22em;
-    transition: text-decoration-color 160ms var(--ease-out);
-  }
+    [data-blaming] .gh,
+    [data-blaming] .gd {
+      display: block;
+      color: var(--ink-muted);
+    }
 
-  [data-blaming] .gh:hover {
-    text-decoration-color: currentColor;
-  }
+    [data-blaming] .gh {
+      grid-column: 1;
+      justify-self: start;
+      padding: 0;
+      border: 0;
+      background: none;
+      font: inherit;
+      cursor: pointer;
+      text-decoration: underline 2px var(--sage);
+      text-underline-offset: 0.22em;
+      transition: text-decoration-color 160ms var(--ease-out);
+    }
 
-  [data-blaming] .gd {
-    grid-column: 2;
-  }
+    [data-blaming] .gh:hover {
+      text-decoration-color: currentColor;
+    }
 
-  [data-blaming] .txt {
-    grid-column: 1 / -1;
-    color: var(--ink-body);
-    font-family: var(--font-sans);
-    font-size: var(--step-0);
+    [data-blaming] .gd {
+      grid-column: 2;
+    }
+
+    [data-blaming] .txt {
+      grid-column: 1 / -1;
+      color: var(--ink-body);
+      font-family: var(--font-sans);
+      font-size: var(--step-0);
+    }
   }
 
   .facts {
@@ -548,7 +557,7 @@ const commits: Commit[] = log
     }
   }
 
-  @media (min-width: 48rem) {
+  @media screen and (min-width: 48rem) {
     /* Wide enough for GitHub's layout: hash, date and line number to the left of the line. */
     [data-blaming] .bl {
       grid-template-columns: 7ch 8ch 2ch minmax(0, 1fr);
