@@ -129,8 +129,13 @@
     event.preventDefault();
     const i = current ? commits.findIndex((c) => c.hash === current!.hash) : 0;
     const next = commits[i + step];
-    if (next) toCommit(next, true);
-    else if (step < 0 && current) toMain();
+    if (next) {
+      toCommit(next, true);
+      // Focus on a hash follows HEAD, so the ring never stays behind on a row HEAD has left.
+      if (document.activeElement?.matches('[data-checkout]')) {
+        rowOf(next.hash)?.querySelector<HTMLElement>('[data-checkout]')?.focus({ preventScroll: true });
+      }
+    } else if (step < 0 && current) toMain();
   };
 
   onMount(() => {

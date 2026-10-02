@@ -207,6 +207,8 @@
     background: var(--sage-soft);
   }
 
+  /* No hairline on the band, nor under it: checked out, the band can sit on any row. */
+  .row.head::before,
   .row.head + .row::before {
     display: none;
   }
@@ -233,11 +235,8 @@
     line-height: 1.5rem;
   }
 
-  /*
-    Checkout-able: reads like the diffstat's names, a Sage underline at rest. `:where()` keeps the reset at
-    `.hash` weight, so the layout's own `.hash` padding (the row's top pad on wide screens) still wins.
-  */
-  :where(button).hash {
+  /* Checkout-able: reads like the diffstat's names, a Sage underline at rest. */
+  button.hash {
     justify-self: start;
     align-self: start;
     padding: 0;
@@ -555,9 +554,13 @@
       display: contents;
     }
 
-    .hash,
     .when {
       padding-top: var(--pad);
+    }
+
+    /* Margin, not padding: the hash can be a button, and its focus ring should hug the hash. */
+    .hash {
+      margin-top: var(--pad);
     }
 
     .hash,
