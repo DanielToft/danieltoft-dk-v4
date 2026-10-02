@@ -18,12 +18,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Full history: `git blame` on the bio finds the commit that last changed the Lighthouse test. In a
+      # one-commit checkout every file looks added by HEAD.
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Install, build and upload
+        with:
+          fetch-depth: 0
+      # The Lighthouse test runs on the built site before upload: a score under its floor stops the deploy.
+      - name: Install, build, test and upload
         uses: withastro/action@v6
         with:
           package-manager: bun@latest
+          build-cmd: bun run build && bun run lighthouse
 
   deploy:
     needs: build

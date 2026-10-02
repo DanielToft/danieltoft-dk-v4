@@ -1,4 +1,5 @@
 ---
+import { execSync } from 'node:child_process';
 import Base from '../layouts/Base.astro';
 import Wordmark from '../components/Wordmark.svelte';
 import Uptime from '../components/Uptime.svelte';
@@ -9,7 +10,7 @@ import CopyEmail from '../components/CopyEmail.svelte';
 import Shortcuts from '../components/Shortcuts.svelte';
 import Checkout from '../components/Checkout.svelte';
 import { profile } from '../data/profile';
-import { roles, formatYM, toMonths } from '../data/experience';
+import { roles, formatYM, toMonths, type YearMonth } from '../data/experience';
 import { blameAt, buildLog } from '../data/log';
 import { buildStats } from '../data/skills';
 import type { Commit } from '../scripts/checkout';
@@ -25,17 +26,33 @@ const root = log.find((r) => r.kind === 'root')!.hash;
 // about.md under `git blame`: each line on the role it dates from, numbered through the file. Like a blame
 // hunk, the hash and date print only where the commit changes, and every paragraph opens a new hunk.
 // `age` (0 oldest, 1 newest) tints the bar.
+// A `proof` line is blamed on the performance test instead: the commit that last changed it, linked to the
+// test on GitHub. Before the test is committed, or outside a git checkout, it blames like the rest.
 const oldest = toMonths(first.start);
 const newest = new Date(builtAt).getFullYear() * 12 + new Date(builtAt).getMonth();
+const TEST = 'scripts/lighthouse.mjs';
+const built = (() => {
+  try {
+    const [sha, date] = execSync(`git log -1 --format=%H%n%cs -- ${TEST}`, { encoding: 'utf8' }).trim().split('\n');
+    if (!sha) return null;
+    return { hash: sha.slice(0, 7), date: date as YearMonth, url: `${profile.source}/blob/${sha}/${TEST}` };
+  } catch {
+    return null;
+  }
+})();
 let lineNo = 0;
 const about = profile.about.map((paragraph) => {
   let previous = '';
-  return paragraph.map(({ text, since }) => {
-    const row = blameAt(since, log);
-    const at = toMonths(row.date);
-    const same = row.hash === previous;
-    previous = row.hash;
-    return { text, n: ++lineNo, hash: row.hash, date: formatYM(row.date), at, same, age: (at - oldest) / (newest - oldest) };
+  return paragraph.map((line) => {
+    const proof = 'proof' in line && built !== null;
+    const row = blameAt(line.since, log);
+    const hash = proof ? built.hash : row.hash;
+    const date = proof ? built.date : row.date;
+    const at = toMonths(date);
+    const same = hash === previous;
+    previous = hash;
+    const age = Math.min(1, (at - oldest) / (newest - oldest));
+    return { text: line.text, n: ++lineNo, hash, date: formatYM(date), at, same, age, url: proof ? built.url : undefined };
   });
 });
 const commits: Commit[] = log
@@ -82,19 +99,26 @@ const commits: Commit[] = log
                     <span class="bl" data-blame-at={line.at} style={`--age: ${line.age.toFixed(2)}`}>
                       {!line.same && (
                         <Fragment>
-                          <button
-                            type="button"
-                            class="gh"
-                            data-checkout={line.hash}
-                            aria-label={`git checkout ${line.hash}: se siden som i ${line.date}`}
-                          >
-                            {line.hash}
-                          </button>
+                          {line.url ? (
+                            <a class="gh" href={line.url} aria-label={`Commit ${line.hash} på GitHub: performancetesten`}>
+                              {line.hash}
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              class="gh"
+                              data-checkout={line.hash}
+                              aria-label={`git checkout ${line.hash}: se siden som i ${line.date}`}
+                            >
+                              {line.hash}
+                            </button>
+                          )}
                           <span class="gd">{line.date}</span>
                         </Fragment>
                       )}
                       <span class="gn" aria-hidden="true">{line.n}</span>
                       <span class="txt">{line.text}</span>
+                      {line.url && <span class="proof" data-proof data-source={profile.source} role="status" hidden />}
                     </span>
                   </Fragment>
                 ))}
@@ -194,10 +218,56 @@ const commits: Commit[] = log
     const blame = about.querySelector<HTMLButtonElement>('[data-blame-toggle]')!;
     const blameCmd = about.querySelector('[data-blame-cmd]')!;
     blame.hidden = false;
+
+    // The proof under "performance": the scores of the Lighthouse run that gated this deploy, written next to the
+    // page (`scripts/lighthouse.mjs`). Fetched only when blame opens, so the page Lighthouse measured never had it.
+    const proof = about.querySelector<HTMLElement>('[data-proof]');
+    const LABELS: Record<string, string> = {
+      performance: 'performance',
+      accessibility: 'tilgængelighed',
+      'best-practices': 'best practices',
+      seo: 'SEO',
+    };
+    const el = (tag: string, text: string, className?: string) => {
+      const node = document.createElement(tag);
+      node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    };
+    const link = (href: string, text: string) => Object.assign(el('a', text), { href });
+    let proven = false;
+    const prove = async () => {
+      if (!proof || proven) return;
+      proven = true;
+      try {
+        const run = await (await fetch('/lighthouse.json')).json();
+        const scores = Object.entries(LABELS).flatMap(([id, label], i) => [
+          ...(i ? [' · '] : []),
+          el('b', String(run.scores[id])),
+          ` ${label}`,
+        ]);
+        const passed = Object.keys(LABELS).every((id) => run.scores[id] >= run.floor);
+        proof.replaceChildren(
+          el('span', passed ? '✓ Lighthouse ' : 'Lighthouse ', 'ok'),
+          ...scores,
+          el('br', ''),
+          el('span', `målt på ${run.formFactor === 'mobile' ? 'mobil' : 'desktop'} ved deploy af `, 'note'),
+          link(`${proof.dataset.source}/commit/${run.commit}`, run.commit.slice(0, 7)),
+          el('span', ' · ', 'note'),
+          link('/lighthouse.html', 'se rapporten'),
+        );
+      } catch {
+        // Not deployed (the dev server has no run): say where the scores come from instead.
+        proof.replaceChildren(el('span', 'Lighthouse kører ved hvert deploy; scorerne står her på den live side.', 'note'));
+      }
+      proof.hidden = false;
+    };
+
     blame.addEventListener('click', () => {
       const on = about.toggleAttribute('data-blaming');
       blame.setAttribute('aria-pressed', String(on));
       blameCmd.textContent = on ? 'git blame' : 'cat';
+      if (on) prove();
     });
 
     // Long `Kunder:` trailers fold behind "+N flere"; without JS they print in full.
@@ -306,7 +376,8 @@ const commits: Commit[] = log
 
   .gh,
   .gd,
-  .gn {
+  .gn,
+  .proof {
     display: none;
   }
 
@@ -382,6 +453,26 @@ const commits: Commit[] = log
 
     [data-blaming] .gd {
       grid-column: 2;
+    }
+
+    /* The proof under its line: the deploy's Lighthouse scores (filled by the page script). */
+    [data-blaming] .proof:not([hidden]) {
+      display: block;
+      grid-column: 1 / -1;
+      margin-top: var(--space-1);
+      color: var(--ink);
+    }
+
+    .proof :global(.ok) {
+      font-weight: 700;
+    }
+
+    .proof :global(a) {
+      text-decoration-color: var(--sage);
+    }
+
+    .proof :global(.note) {
+      color: var(--ink-muted);
     }
 
     [data-blaming] .txt {
@@ -570,7 +661,8 @@ const commits: Commit[] = log
       text-align: right;
     }
 
-    [data-blaming] .txt {
+    [data-blaming] .txt,
+    [data-blaming] .proof:not([hidden]) {
       grid-column: 4;
     }
 

@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "lighthouse": "node scripts/lighthouse.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -19,5 +20,9 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "chrome-launcher": "^1.2.2",
+    "lighthouse": "^13.5.0"
   }
 }
