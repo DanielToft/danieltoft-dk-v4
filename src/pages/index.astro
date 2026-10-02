@@ -35,7 +35,8 @@ const built = (() => {
   try {
     const [sha, date] = execSync(`git log -1 --format=%H%n%cs -- ${TEST}`, { encoding: 'utf8' }).trim().split('\n');
     if (!sha) return null;
-    return { hash: sha.slice(0, 7), date: date as YearMonth, url: `${profile.source}/blob/${sha}/${TEST}` };
+    // Month and year, like the roles beside it in the gutter.
+    return { hash: sha.slice(0, 7), date: date.slice(0, 7) as YearMonth, url: `${profile.source}/blob/${sha}/${TEST}` };
   } catch {
     return null;
   }
@@ -661,9 +662,13 @@ const commits: Commit[] = log
       text-align: right;
     }
 
-    [data-blaming] .txt,
-    [data-blaming] .proof:not([hidden]) {
+    [data-blaming] .txt {
       grid-column: 4;
+    }
+
+    /* The proof runs from the date column out: four scores need more than the text column gives. */
+    [data-blaming] .proof:not([hidden]) {
+      grid-column: 2 / -1;
     }
 
     .remotes li {
