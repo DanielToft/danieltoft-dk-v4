@@ -35,7 +35,7 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
       <div class="intro">
         <div class="about">
           <p class="lead">{profile.lead}</p>
-          <p class="bio">{profile.about}</p>
+          {profile.about.map((text) => <p class="bio">{text}</p>)}
         </div>
 
         <div class="side">

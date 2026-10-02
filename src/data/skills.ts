@@ -1,7 +1,7 @@
 import { education, roles, techName, toMonths, type Role } from './experience';
 
 /** The diffstat, in this order: what Daniel works with today. Every name must be in some role's `tech`. */
-export const featured = ['C# / .NET', 'TypeScript', 'Angular', 'Azure', 'Kubernetes', 'DevOps', 'HTML & CSS', 'Aspire', 'AI'];
+export const featured = ['C# / .NET', 'TypeScript', 'Angular', 'Umbraco', 'Azure', 'DevOps', 'HTML & CSS', 'Aspire', 'Generative AI', 'RAG & Vector Search'];
 
 export interface SkillStat {
   name: string;

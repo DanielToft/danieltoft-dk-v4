@@ -26,7 +26,7 @@ export interface Role {
 export const roles: Role[] = [
   {
     company: 'ILLUMI A/S',
-    title: 'Software Architect',
+    title: 'Software, Cloud & Platform Architect',
     start: '2016-06',
     end: null,
     url: 'https://www.illumi.dk',
@@ -35,11 +35,12 @@ export const roles: Role[] = [
       'TypeScript',
       'Angular',
       'HTML & CSS',
+      'Umbraco',
       'Azure',
-      { name: 'Kubernetes', since: '2020' },
       'DevOps',
       { name: 'Aspire', since: '2023-11' },
-      { name: 'AI', since: '2023' },
+      { name: 'Generative AI', since: '2023' },
+      { name: 'RAG & Vector Search', since: '2023' },
     ],
     clients: [
       'Aarhus Festuge',
