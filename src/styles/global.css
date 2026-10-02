@@ -137,6 +137,15 @@ kbd {
   top: var(--space-4);
 }
 
+/* Detached HEAD: the checkout bar sits fixed at the bottom. Keep the footer and scroll targets clear of it. */
+html[data-detached] {
+  scroll-padding-bottom: var(--checkout-h, 0px);
+}
+
+html[data-detached] body {
+  padding-bottom: var(--checkout-h, 0px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

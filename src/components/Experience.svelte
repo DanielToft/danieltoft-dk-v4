@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { formatYM, techName } from '../data/experience';
-  import { buildLog, duration } from '../data/log';
+  import { formatYM, techName, toMonths } from '../data/experience';
+  import { buildLog, duration, type LogRow } from '../data/log';
 
   const rows = buildLog();
   const lanes = Math.max(...rows.map((r) => r.lane)) + 1;
@@ -11,8 +11,27 @@
   const FOLD_AFTER = 3;
 </script>
 
+<!-- The hash prints as text; with JS the checkout island swaps in the button, which rewinds the page to the row. -->
+{#snippet hash(row: LogRow)}
+  <span class="hash" aria-hidden="true" data-hash-text>{row.hash}</span>
+  {#if row.kind !== 'root'}
+    <button
+      type="button"
+      class="hash"
+      data-checkout={row.hash}
+      title="git checkout {row.hash}"
+      aria-label="git checkout {row.hash}: se siden som i {formatYM(row.date)}"
+      hidden>{row.hash}</button
+    >
+  {/if}
+{/snippet}
+
 <p class="cmd" aria-hidden="true">
-  <span class="prompt">$</span> git log --graph --author="Daniel Toft"<span data-grep-arg></span>
+  <span class="prompt">$</span> git log --graph --author="Daniel Toft"<span data-grep-arg></span><span
+    class="hint"
+    data-checkout-hint
+    hidden>{'  '}# klik en hash for at rejse tilbage i tid</span
+  >
 </p>
 
 <ol class="log" style:--lanes={lanes} data-log>
@@ -23,6 +42,8 @@
       class:merge={row.kind === 'merge'}
       class:on-branch={row.lane > 0}
       data-tech={row.role?.tech?.map(techName).join('|')}
+      data-hash={row.hash}
+      data-at={toMonths(row.date)}
     >
       <span class="g" aria-hidden="true">
         {#if row.top}<span class="lane top l{row.lane}"></span>{/if}
@@ -45,25 +66,27 @@
       {#if row.role}
         {@const role = row.role}
         <div class="meta">
-          <span class="hash" aria-hidden="true">{row.hash}</span>
+          {@render hash(row)}
           <p class="when">
             <span class="range">
               <time datetime={role.start}>{formatYM(role.start)}</time>
               <span aria-hidden="true">–</span><span class="sr-only">til</span>
-              {#if role.end}<time datetime={role.end}>{formatYM(role.end)}</time>{:else}nu{/if}
+              <span data-end>{#if role.end}<time datetime={role.end}>{formatYM(role.end)}</time>{:else}nu{/if}</span>
             </span>
             {#if role.end}
               {@const dur = duration(role.start, role.end)}
-              {#if dur}<span class="dur">{dur}</span>{/if}
+              {#if dur}<span class="dur" data-dur>{dur}</span>{/if}
             {:else}
-              <span class="dur" data-since={role.start}>{duration(role.start, builtYM)}</span>
+              <span class="dur" data-dur data-since={role.start}>{duration(role.start, builtYM)}</span>
             {/if}
           </p>
         </div>
         <div class="msg">
           <h3 class="company">
             {#if role.url}<a href={role.url} title={host(role.url)}>{role.company}</a>{:else}{role.company}{/if}
-            {#if row.head}<span class="ref head-ref"><span class="sr-only">nuværende rolle, </span>HEAD -&gt; main</span>{/if}
+            {#if row.head}<span class="ref head-ref" data-main-ref
+                ><span class="sr-only">nuværende rolle, </span><span data-ref-name>HEAD -&gt; main</span></span
+              >{/if}
             {#if role.branch}<span class="ref branch l{row.lane}"><span class="sr-only">parallelt forløb, </span>{role.branch}</span>{/if}
           </h3>
           <p class="title">{role.title}</p>
@@ -84,7 +107,7 @@
         </div>
       {:else}
         <div class="meta">
-          <span class="hash" aria-hidden="true">{row.hash}</span>
+          {@render hash(row)}
           <p class="when"><time datetime={row.date}>{formatYM(row.date)}</time></p>
         </div>
         <div class="msg">
@@ -123,6 +146,10 @@
   .prompt {
     color: var(--ink);
     font-weight: 700;
+  }
+
+  .hint {
+    white-space: pre-wrap;
   }
 
   .log {
@@ -204,6 +231,25 @@
     color: var(--ink-muted);
     font-size: var(--step--1);
     line-height: 1.5rem;
+  }
+
+  /* Checkout-able: reads like the diffstat's names, a Sage underline at rest. */
+  button.hash {
+    justify-self: start;
+    align-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    text-decoration: underline 2px var(--sage);
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 160ms var(--ease-out);
+  }
+
+  button.hash:hover {
+    text-decoration-color: currentColor;
   }
 
   .when {
@@ -291,6 +337,11 @@
     padding-bottom: var(--pad);
   }
 
+  /* The `HEAD` ref the checkout island hangs on a merge row. */
+  .merge-msg :global(.ref) {
+    margin-left: var(--space-2);
+  }
+
   .ref {
     display: inline-flex;
     align-items: center;
@@ -307,6 +358,12 @@
   .head-ref {
     background: var(--mint);
     color: var(--ink);
+  }
+
+  /* Detached: `main` stays on its row, off the band. */
+  .row:not(.head) .head-ref {
+    background: var(--ink);
+    color: var(--mint);
   }
 
   .branch {
@@ -333,8 +390,26 @@
 
   .head .hash,
   .head .dur,
-  .head .trailer {
+  .head .trailer,
+  .head .merge-msg {
     color: var(--sage-soft);
+  }
+
+  .head button.hash {
+    text-decoration-color: var(--sage);
+  }
+
+  .head button.hash:hover {
+    text-decoration-color: var(--mint);
+  }
+
+  /* A checked-out branch row carries the band too: its lanes take the light tint. */
+  .head .g .l1 {
+    --c: var(--lavender);
+  }
+
+  .head .g .l2 {
+    --c: var(--sand);
   }
 
   .head .company a {
@@ -347,6 +422,7 @@
 
   .head :global(a:focus-visible),
   .head .more:focus-visible,
+  .head button.hash:focus-visible,
   .head [data-rest]:focus-visible {
     outline-color: var(--mint);
   }
@@ -369,6 +445,15 @@
 
   .row:global([data-miss]) .node {
     --c: var(--sage);
+  }
+
+  /* `git checkout`: commits after the checked-out month aren't written yet. The whole row fades, graph too. */
+  .row {
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  .row:global([data-future]) {
+    opacity: 0.22;
   }
 
   /* ---- graph ---- */

@@ -160,6 +160,10 @@ export const toMonths = (ym: YearMonth): number => {
   return y * 12 + (m - 1);
 };
 
+/** Back from `toMonths` to `YYYY-MM`. */
+export const fromMonths = (months: number): YearMonth =>
+  `${Math.floor(months / 12)}-${String((months % 12) + 1).padStart(2, '0')}`;
+
 const MONTHS_DA = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
 /** "2006", "jun 2016" or "20. aug 1989": only as precise as the date itself. */

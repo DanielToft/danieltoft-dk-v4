@@ -24,10 +24,8 @@ export interface SkillStat {
   name: string;
   /** The tech names it counts, for filtering the log. */
   from: string[];
-  /** Months in stretches that have ended. */
-  closed: number;
-  /** Month count (as `toMonths`) where the stretch still running began, if any. */
-  openFrom?: number;
+  /** Stretches with the skill as `toMonths` counts, merged where roles overlap, oldest first. `end` is `null` while it runs. */
+  runs: { start: number; end: number | null }[];
 }
 
 /** Time with each skill: the union of every role that lists it, so parallel roles count once. */
@@ -47,20 +45,19 @@ export const buildStats = (list: Role[] = [...roles, ...education], entries: Fea
       .sort((a, b) => a.start - b.start);
     if (!spans.length) throw new Error(`Skill "${name}" is in no role's tech`);
 
-    let closed = 0;
-    let run = { ...spans[0] };
+    const runs = [{ ...spans[0] }];
     for (const span of spans.slice(1)) {
-      if (span.start <= run.end) {
-        run.end = Math.max(run.end, span.end);
-      } else {
-        closed += run.end - run.start;
-        run = { ...span };
-      }
+      const run = runs[runs.length - 1];
+      if (span.start <= run.end) run.end = Math.max(run.end, span.end);
+      else runs.push({ ...span });
     }
-    if (run.end !== Infinity) return { name, from, closed: closed + run.end - run.start };
-    return { name, from, closed, openFrom: run.start };
+    // `null`, not `Infinity`: the stats are island props, and those go through JSON.
+    return { name, from, runs: runs.map(({ start, end }) => ({ start, end: end === Infinity ? null : end })) };
   });
 
+/** Months with a skill as of `at` (a `toMonths` count). Zero before it began. */
+export const monthsAt = (stat: SkillStat, at: number): number =>
+  stat.runs.reduce((sum, { start, end }) => sum + Math.max(0, Math.min(end ?? at, at) - start), 0);
+
 /** Months with a skill as of `now`. */
-export const monthsOf = (stat: SkillStat, now: Date): number =>
-  stat.closed + (stat.openFrom === undefined ? 0 : now.getFullYear() * 12 + now.getMonth() - stat.openFrom);
+export const monthsOf = (stat: SkillStat, now: Date): number => monthsAt(stat, now.getFullYear() * 12 + now.getMonth());

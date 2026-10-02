@@ -1,3 +1,4 @@
+import { toMonths, type YearMonth } from './experience';
 import { buildLog } from './log';
 
 export interface Project {
@@ -61,6 +62,8 @@ export const clients: Client[] = [
 export interface Credit {
   name: string;
   url?: string;
+  /** Start of the first role that names the client: when it entered the log. */
+  since: YearMonth;
 }
 
 /**
@@ -68,7 +71,8 @@ export interface Credit {
  * log order, each role's own order, every client once. Every client must be on a role, and every role's defined.
  */
 export const buildCredits = (list: Client[] = clients): Credit[] => {
-  const order = [...new Set(buildLog().flatMap((row) => row.role?.clients ?? []))];
+  const log = buildLog();
+  const order = [...new Set(log.flatMap((row) => row.role?.clients ?? []))];
   for (const name of order) {
     if (!list.some((c) => c.name === name)) throw new Error(`Client "${name}" is on a role but not in clients`);
   }
@@ -78,6 +82,9 @@ export const buildCredits = (list: Client[] = clients): Credit[] => {
 
   return order.map((name) => {
     const client = list.find((c) => c.name === name)!;
-    return { name, url: client.url ?? client.projects?.find((p) => p.url)?.url };
+    const since = log
+      .flatMap((row) => (row.role?.clients?.includes(name) ? [row.role.start] : []))
+      .reduce((a, b) => (toMonths(a) < toMonths(b) ? a : b));
+    return { name, url: client.url ?? client.projects?.find((p) => p.url)?.url, since };
   });
 };

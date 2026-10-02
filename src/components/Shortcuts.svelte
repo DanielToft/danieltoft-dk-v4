@@ -24,7 +24,7 @@
     addEventListener('keydown', onKey);
 
     console.log(
-      '%c$ git log --author="Daniel Toft"%c\nHej udvikler. Kig gerne i kilden: https://github.com/DanielToft\nGenveje: e = email, g = GitHub, l = LinkedIn',
+      '%c$ git log --author="Daniel Toft"%c\nHej udvikler. Kig gerne i kilden: https://github.com/DanielToft\nGenveje: e = email, g = GitHub, l = LinkedIn\nTidsrejse: j/k går gennem loggen, Esc = git switch main',
       'color:#214b3c;background:#d5f4e5;font:600 13px "Cascadia Code",monospace;padding:4px 8px;border-radius:4px',
       'color:inherit;font:12px monospace',
     );

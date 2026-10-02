@@ -7,17 +7,33 @@ import Skills from '../components/Skills.svelte';
 import Clients from '../components/Clients.svelte';
 import CopyEmail from '../components/CopyEmail.svelte';
 import Shortcuts from '../components/Shortcuts.svelte';
+import Checkout from '../components/Checkout.svelte';
 import { profile } from '../data/profile';
-import { roles, formatYM } from '../data/experience';
+import { roles, formatYM, toMonths } from '../data/experience';
 import { buildLog } from '../data/log';
 import { buildStats } from '../data/skills';
+import type { Commit } from '../scripts/checkout';
 
 const current = roles.find((r) => r.end === null)!;
 const first = roles.reduce((a, b) => (a.start < b.start ? a : b));
 const builtAt = Date.now();
 const year = new Date(builtAt).getFullYear();
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
-const root = buildLog().find((r) => r.kind === 'root')!.hash;
+const log = buildLog();
+const root = log.find((r) => r.kind === 'root')!.hash;
+const commits: Commit[] = log
+  .filter((r) => r.kind !== 'root')
+  .map((r) => ({
+    hash: r.hash,
+    at: toMonths(r.date),
+    lane: r.lane,
+    subject: r.role?.company ?? `Merge branch '${r.merged}'`,
+    role: r.role && {
+      label: `${r.role.title}, ${r.role.company}`,
+      start: toMonths(r.role.start),
+      end: r.role.end ? toMonths(r.role.end) : null,
+    },
+  }));
 ---
 
 <Base
@@ -40,7 +56,7 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
 
         <div class="side">
           <dl class="facts">
-            <div><dt>rolle</dt><dd>{current.title}, {current.company}</dd></div>
+            <div><dt>rolle</dt><dd data-fact-role>{current.title}, {current.company}</dd></div>
             <div><dt>sted</dt><dd>{profile.city}</dd></div>
             <div><dt>siden</dt><dd>{formatYM(first.start)}</dd></div>
             <div>
@@ -108,6 +124,7 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
     <p class="colophon">
       <span>© {year} {profile.name}</span>
       <span class="keys">Genveje <kbd>e</kbd> <kbd>g</kbd> <kbd>l</kbd></span>
+      <span class="keys">Tidsrejse <kbd>j</kbd> <kbd>k</kbd></span>
     </p>
   </footer>
 
@@ -137,6 +154,7 @@ const root = buildLog().find((r) => r.kind === 'root')!.hash;
   </script>
 
   <Shortcuts client:idle email={profile.email} github={profile.github.url} linkedin={profile.linkedin.url} />
+  <Checkout client:idle commits={commits} builtAt={builtAt} />
 </Base>
 
 <style>

@@ -1,28 +1,43 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { monthsOf, type SkillStat } from '../data/skills';
+  import { monthsAt, type SkillStat } from '../data/skills';
+  import { detached, onCheckout, type Checkout } from '../scripts/checkout';
 
   /** `root` is the log's initial commit; `builtAt` is the build timestamp so SSR and hydration agree. */
   let { stats, root, builtAt }: { stats: SkillStat[]; root: string; builtAt: number } = $props();
 
-  type Line = { name: string; from: string[]; n: string; bar: string };
+  /** `none`: not picked up yet at the checked-out month. */
+  type Line = { name: string; from: string[]; n: string; bar: string; none: boolean };
 
   let ready = $state(false);
   let grep = $state<string | null>(null);
   let status = $state('');
+  let at = $state<Checkout | null>(null);
 
-  onMount(() => (ready = true));
+  onMount(() => {
+    ready = true;
+    at = detached();
+    return onCheckout((next) => (at = next));
+  });
 
   const lines = $derived.by((): Line[] => {
     const now = new Date(ready ? Date.now() : builtAt);
+    const month = at?.at ?? now.getFullYear() * 12 + now.getMonth();
     return stats.map((stat) => {
-      const months = monthsOf(stat, now);
+      const months = monthsAt(stat, month);
       const years = Math.floor(months / 12);
-      return { name: stat.name, from: stat.from, n: years ? `${years} år` : `${months} mdr`, bar: '+'.repeat(Math.max(1, years)) };
+      return {
+        name: stat.name,
+        from: stat.from,
+        n: !months ? '–' : years ? `${years} år` : `${months} mdr`,
+        bar: months ? '+'.repeat(Math.max(1, years)) : '',
+        none: !months,
+      };
     });
   });
   const nameW = $derived(Math.max(...lines.map((l) => l.name.length)));
-  const numW = $derived(Math.max(...lines.map((l) => l.n.length)));
+  // Checked out, the widest count can be "11 mdr": reserve it, so the bars hold still while scrubbing.
+  const numW = $derived(Math.max(at ? '11 mdr'.length : 0, ...lines.map((l) => l.n.length)));
 
   // `git log --grep` over the static log: rows without the skill fade, the graph stays whole.
   const toggle = ({ name, from }: Line) => {
@@ -46,7 +61,7 @@
   <span class="bar" aria-hidden="true">{line.bar}</span>
 {/snippet}
 
-<p class="cmd" aria-hidden="true"><span class="prompt">$</span> git diff --stat {root}..HEAD</p>
+<p class="cmd" aria-hidden="true"><span class="prompt">$</span> git diff --stat {root}..{at?.hash ?? 'HEAD'}</p>
 
 <ul
   class="stat"
@@ -56,7 +71,7 @@
   aria-label={ready ? 'Vælg en kompetence for at filtrere erfaringen' : undefined}
 >
   {#each lines as line (line.name)}
-    <li>
+    <li class:none={line.none}>
       {#if ready}
         <button
           type="button"
@@ -153,6 +168,15 @@
 
   .filtered .line:not(.on) {
     opacity: 0.45;
+  }
+
+  /* Checked out before the skill came in: the line stays, so the list holds still, but fades out. */
+  li {
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  .none {
+    opacity: 0.3;
   }
 
   @media (pointer: coarse) {

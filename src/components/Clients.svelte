@@ -1,5 +1,6 @@
 <script lang="ts">
   import { buildCredits } from '../data/clients';
+  import { toMonths } from '../data/experience';
 
   const credits = buildCredits();
   const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
@@ -9,9 +10,9 @@
   <span class="prompt">$</span> git log --format='%(trailers:key=Kunder,valueonly)' | awk '!seen[$0]++'
 </p>
 
-<ul class="credits">
-  {#each credits as { name, url }, i (name)}
-    <li>
+<ul class="credits" data-credits>
+  {#each credits as { name, url, since }, i (name)}
+    <li data-at={toMonths(since)}>
       {#if url}<a href={url} title={bare(url)}>{name}</a>{:else}{name}{/if}{#if i < credits.length - 1}<span
           class="sep"
           aria-hidden="true">{' /'}</span
@@ -52,6 +53,12 @@
   /* Lines break after a slash: a flex item moves down whole, and only a name wider than the column wraps. */
   li {
     min-width: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  /* `git checkout`: clients from after the checked-out month fade, like the log's future rows. */
+  li:global([data-future]) {
+    opacity: 0.22;
   }
 
   .sep {
