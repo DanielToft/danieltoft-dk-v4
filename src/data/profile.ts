@@ -6,6 +6,8 @@ export const profile = {
   born: '1989-08-20',
   email: 'mail@danieltoft.dk',
   github: { handle: 'DanielToft', url: 'https://github.com/DanielToft' },
+  /** The page printed to PDF on each deploy by `scripts/cv.mjs`, which writes it under this name. */
+  cv: '/daniel-toft-cv.pdf',
   /** This site's own repository: `git blame` links the line it proves to the commit that built the page. */
   source: 'https://github.com/DanielToft/danieltoft-dk-v4',
   linkedin: { handle: 'danieltoft89', url: 'https://www.linkedin.com/in/danieltoft89' },

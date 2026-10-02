@@ -158,6 +158,10 @@ const commits: Commit[] = log
               <a href={profile.linkedin.url}>LinkedIn<span class="print-url">{bare(profile.linkedin.url)}</span></a>
               <kbd title="Tryk l">l</kbd>
             </li>
+            <li class="cv">
+              <a href={profile.cv}>CV (PDF)</a>
+              <kbd title="Tryk p">p</kbd>
+            </li>
           </ul>
         </div>
       </div>
@@ -203,7 +207,7 @@ const commits: Commit[] = log
 
     <p class="colophon">
       <span>© {year} {profile.name}</span>
-      <span class="keys">Genveje <kbd>e</kbd> <kbd>g</kbd> <kbd>l</kbd></span>
+      <span class="keys">Genveje <kbd>e</kbd> <kbd>g</kbd> <kbd>l</kbd> <kbd>p</kbd></span>
       <span class="keys">Tidsrejse <kbd>j</kbd> <kbd>k</kbd></span>
       <span class="keys">Blame <kbd>b</kbd></span>
     </p>
@@ -290,7 +294,7 @@ const commits: Commit[] = log
     }
   </script>
 
-  <Shortcuts client:idle email={profile.email} github={profile.github.url} linkedin={profile.linkedin.url} />
+  <Shortcuts client:idle email={profile.email} github={profile.github.url} linkedin={profile.linkedin.url} cv={profile.cv} />
   <Checkout client:idle commits={commits} builtAt={builtAt} />
 </Base>
 
@@ -743,6 +747,7 @@ const commits: Commit[] = log
 
     /* A running count belongs on screen; on paper `siden` says the same. `.facts` to outweigh `.facts div`. */
     .links kbd,
+    .links .cv,
     .facts .uptime {
       display: none;
     }

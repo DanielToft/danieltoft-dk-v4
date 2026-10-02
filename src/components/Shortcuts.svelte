@@ -1,13 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let { email, github, linkedin }: { email: string; github: string; linkedin: string } = $props();
+  let { email, github, linkedin, cv }: { email: string; github: string; linkedin: string; cv: string } = $props();
 
   onMount(() => {
     const keys: Record<string, () => void> = {
       e: () => (location.href = `mailto:${email}`),
       g: () => window.open(github, '_blank', 'noopener'),
       l: () => window.open(linkedin, '_blank', 'noopener'),
+      p: () => window.open(cv, '_blank', 'noopener'),
       b: () => {
         document.querySelector<HTMLButtonElement>('[data-blame-toggle]:not([hidden])')?.click();
         const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
@@ -29,7 +30,7 @@
     addEventListener('keydown', onKey);
 
     console.log(
-      '%c$ git log --author="Daniel Toft"%c\nHej udvikler. Kig gerne i kilden: https://github.com/DanielToft\nGenveje: e = email, g = GitHub, l = LinkedIn\nTidsrejse: j/k går gennem loggen, Esc = git switch main\nBlame: b viser, hvornår hver linje i bio\'en blev skrevet',
+      '%c$ git log --author="Daniel Toft"%c\nHej udvikler. Kig gerne i kilden: https://github.com/DanielToft\nGenveje: e = email, g = GitHub, l = LinkedIn, p = CV (PDF)\nTidsrejse: j/k går gennem loggen, Esc = git switch main\nBlame: b viser, hvornår hver linje i bio\'en blev skrevet',
       'color:#214b3c;background:#d5f4e5;font:600 13px "Cascadia Code",monospace;padding:4px 8px;border-radius:4px',
       'color:inherit;font:12px monospace',
     );

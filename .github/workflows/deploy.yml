@@ -24,12 +24,13 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      # The Lighthouse test runs on the built site before upload: a score under its floor stops the deploy.
-      - name: Install, build, test and upload
+      # After the build: the CV printed to PDF, then the Lighthouse test, whose score under its floor stops the
+      # deploy. Both run on the built site before upload.
+      - name: Install, build, print the CV, test and upload
         uses: withastro/action@v6
         with:
           package-manager: bun@latest
-          build-cmd: bun run build && bun run lighthouse
+          build-cmd: bun run build && bun run cv && bun run lighthouse
 
   deploy:
     needs: build

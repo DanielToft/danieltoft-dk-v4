@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "cv": "node scripts/cv.mjs",
     "lighthouse": "node scripts/lighthouse.mjs",
     "preview": "astro preview",
     "astro": "astro"
