@@ -6,14 +6,17 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  lang?: 'da' | 'en';
+  /** Keeps the page out of search results, for pages that are only linked from elsewhere. */
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, lang = 'da', noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="da">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,6 +24,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <Font cssVariable="--font-mono" preload={[{ subset: 'latin' }]} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#d5f4e5" />
@@ -29,7 +33,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="da_DK" />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'da_DK'} />
     <meta name="generator" content={Astro.generator} />
   </head>
   <body>
