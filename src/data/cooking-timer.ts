@@ -1,35 +1,11 @@
+import { mail, type Lang, type PrivacyPolicy } from './privacy-policy';
 import { profile } from './profile';
-
-export type Lang = 'da' | 'en';
-
-export const langs: Lang[] = ['da', 'en'];
 
 /** The Play Console links to the English page; the two pages link to each other. */
 export const privacyPolicyPath = (lang: Lang) => `/apps/cooking-timer/${lang}/privacy-policy`;
 
 /** Bump when the policy text changes. */
 export const privacyPolicyUpdated = '2026-10-15';
-
-export type Block = { p: string } | { list: { term?: string; text: string }[] };
-
-export interface Section {
-  heading: string;
-  /** Paragraphs may hold inline links, so they are rendered as HTML. */
-  blocks: Block[];
-}
-
-export interface PrivacyPolicy {
-  /** The language's own name, for the language switch. */
-  name: string;
-  title: string;
-  description: string;
-  updated: string;
-  lead: string;
-  intro: string;
-  sections: Section[];
-}
-
-const mail = `<a href="mailto:${profile.email}">${profile.email}</a>`;
 
 /**
  * Cooking Timer stores timers and settings on the device only (no Android backup), syncs them between
