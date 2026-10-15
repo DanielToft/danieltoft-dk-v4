@@ -1,0 +1,17 @@
+---
+import PrivacyPolicy from '../../../../layouts/PrivacyPolicy.astro';
+import { langs, type Lang } from '../../../../data/privacy-policy';
+import { privacyPolicy, privacyPolicyPath, privacyPolicyUpdated } from '../../../../data/vejr';
+
+// Not linked from the site: the Play Console links here, so the pages stay out of search results.
+export function getStaticPaths() {
+  return langs.map((lang) => ({ params: { lang } }));
+}
+---
+
+<PrivacyPolicy
+  policies={privacyPolicy}
+  path={privacyPolicyPath}
+  updated={privacyPolicyUpdated}
+  lang={Astro.params.lang as Lang}
+/>
