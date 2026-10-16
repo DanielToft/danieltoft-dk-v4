@@ -5,12 +5,12 @@ import { profile } from './profile';
 export const privacyPolicyPath = (lang: Lang) => `/apps/vejr/${lang}/privacy-policy`;
 
 /** Bump when the policy text changes. */
-export const privacyPolicyUpdated = '2026-10-15';
+export const privacyPolicyUpdated = '2026-10-16';
 
 /**
  * Vejr has no account, backend, ads or analytics. While it is open, it sends the shown place's coordinates straight to
  * Open-Meteo, MET Norway, DMI and Photon, and takes coarse location fixes only. Android backups hold the settings
- * (the last shown place, saved places, where the phone was last found and the theme), never the cached data.
+ * (the last shown place, saved places, where the phone was last found and the theme and colours), never the cached data.
  */
 export const privacyPolicy: Record<Lang, PrivacyPolicy> = {
   da: {
@@ -29,7 +29,9 @@ export const privacyPolicy: Record<Lang, PrivacyPolicy> = {
               { text: 'Det sted, du sidst så vejret for, så appen åbner der næste gang.' },
               { text: 'Dine gemte steder: navn, område og koordinater.' },
               { text: 'Hvor din telefon sidst blev fundet: den omtrentlige placering og navnet på stedet.' },
-              { text: 'Om appen skal være lys, mørk eller følge telefonen.' },
+              {
+                text: 'Om appen skal være lys, mørk eller følge telefonen, og om den skal bruge farverne fra din baggrund eller sit eget mint-tema.',
+              },
               {
                 text: 'Hentede prognoser, målinger, stationsnavne og søgeresultater, så appen kan vise vejret med det samme og uden internet.',
               },
@@ -55,7 +57,7 @@ export const privacyPolicy: Record<Lang, PrivacyPolicy> = {
         heading: 'Vejrtjenester og stednavne',
         blocks: [
           {
-            p: 'Appen henter data direkte fra tjenesterne herunder og kun, mens den er åben. Hver tjeneste får koordinaterne for det sted, du ser vejret for, og som ved alle forespørgsler på internettet din IP-adresse. Ser du vejret, hvor du er, er det din omtrentlige placering. Ud over det sender appen kun sit navn og versionsnummer.',
+            p: 'Appen henter data direkte fra tjenesterne herunder og kun, mens den er åben. Hver tjeneste får koordinaterne for det sted, du ser vejret for, og som ved alle forespørgsler på internettet din IP-adresse. Ser du vejret, hvor du er, er det din omtrentlige placering. Ud over det sender appen kun sit navn og versionsnummer. Alle forespørgsler sendes krypteret over HTTPS.',
           },
           {
             list: [
@@ -119,7 +121,9 @@ export const privacyPolicy: Record<Lang, PrivacyPolicy> = {
               { text: 'The place you last viewed the weather for, so the app opens there next time.' },
               { text: 'Your saved places: name, area and coordinates.' },
               { text: 'Where your phone was last found: the approximate location and the name of the place.' },
-              { text: 'Whether the app is light, dark or follows the phone.' },
+              {
+                text: 'Whether the app is light, dark or follows the phone, and whether it uses the colours from your wallpaper or its own mint theme.',
+              },
               {
                 text: 'Downloaded forecasts, measurements, station names and search results, so the app can show the weather right away and offline.',
               },
@@ -145,7 +149,7 @@ export const privacyPolicy: Record<Lang, PrivacyPolicy> = {
         heading: 'Weather services and place names',
         blocks: [
           {
-            p: 'The app gets data directly from the services below, and only while it is open. Each service receives the coordinates of the place you are viewing the weather for and, as with any request on the internet, your IP address. When you view the weather where you are, that is your approximate location. Apart from that, the app sends only its name and version number.',
+            p: 'The app gets data directly from the services below, and only while it is open. Each service receives the coordinates of the place you are viewing the weather for and, as with any request on the internet, your IP address. When you view the weather where you are, that is your approximate location. Apart from that, the app sends only its name and version number. All requests are sent encrypted over HTTPS.',
           },
           {
             list: [
